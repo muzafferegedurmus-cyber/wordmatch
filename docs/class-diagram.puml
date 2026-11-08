@@ -1,0 +1,153 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #F8FAFC
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam linetype ortho
+title WordMatch - Sınıflar ve ilişkiler
+package wordmatch {
+ class Main {
+  +{static} main(args : String[]) : void
+ }
+}
+package wordmatch.domain {
+ class Word <<record>> {
+  -id : String
+  -difficulty : Difficulty
+  -category : String
+  -translations : List<String>
+  +text(language : Language) : String
+ }
+ class GameSession {
+  -words : List<Word>
+  -score : int
+  -mistakes : int
+  -secondsRemaining : int
+  -feedbackPending : boolean
+  +attempt(leftId : String, rightId : String) : Attempt
+  +tick() : void
+  +finishFeedback() : void
+  +abandon() : void
+  +words() : List<Word>
+ }
+ enum Language {
+  TR
+  EN
+  IT
+  FR
+  DE
+ }
+ class GameRules {
+  +{static} CORRECT_POINTS : int = 10
+  +{static} WRONG_POINTS : int = -5
+ }
+ enum "GameRules.Difficulty" as Difficulty {
+  EASY
+  MEDIUM
+  HARD
+ }
+ class InvalidGameException
+ class IllegalArgumentException <<JDK>>
+ InvalidGameException --|> IllegalArgumentException
+ GameSession "0..*" o-- "4..8" Word : selected words
+ Word "0..*" --> "1" Difficulty
+ GameSession "0..*" --> "1" Difficulty
+ GameSession ..> GameRules : scoring
+ Word ..> Language
+}
+package wordmatch.service {
+ interface WordOrder {
+  +arrange(words : List<Word>, language : Language, random : Random) : List<Word>
+ }
+ class ShuffledWordOrder {
+  +arrange(...) : List<Word>
+ }
+ class AlphabeticalWordOrder {
+  +arrange(...) : List<Word>
+ }
+ class GameController {
+  -repository : WordRepository
+  -wordOrder : WordOrder
+  -random : Random
+  +setWordOrder(policy : WordOrder) : void
+  +startRound(difficulty, known, practice) : GameSession
+  +column(session, language) : List<Word>
+ }
+ ShuffledWordOrder ..|> WordOrder
+ AlphabeticalWordOrder ..|> WordOrder
+ GameController "1" o-- "1" WordOrder : Strategy
+ GameController ..> GameSession : creates
+}
+package wordmatch.persistence {
+ class WordRepository {
+  -words : List<Word>
+  +choose(difficulty, left, right, random) : List<Word>
+  +allWords() : List<Word>
+ }
+ class AppSettings {
+  -interfaceLanguage : Language
+  -knownLanguage : Language
+  -practiceLanguage : Language
+  -dark : boolean
+  -accent : String
+  -soundEnabled : boolean
+  -file : Path
+  +getKnownLanguage() : Language
+  +setKnownLanguage(value : Language) : void
+  +snapshot() : Properties
+  +save() : void
+  -load() : void
+ }
+ WordRepository "1" *-- "75..*" Word : loaded vocabulary
+ GameController "1" o-- "1" WordRepository
+}
+package wordmatch.ui {
+ class WordMatchApp {
+  -settings : AppSettings
+  -controller : GameController
+  -session : GameSession
+  -countdown : Timer
+  -showMenu() : void
+  -startRound() : void
+ }
+ class ConsoleApp {
+  -controller : GameController
+  -settings : AppSettings
+  +run() : void
+  -playRound() : void
+ }
+ class SoundEffects {
+  +playSelection() : void
+  +close() : void
+ }
+ class I18n {
+  +{static} text(language, key, args) : String
+ }
+ class JFrame <<Swing>>
+ WordMatchApp --|> JFrame
+ WordMatchApp "1" *-- "1" SoundEffects
+ WordMatchApp "1" o-- "1" AppSettings
+ ConsoleApp "1" o-- "1" AppSettings
+ WordMatchApp "1" *-- "1" GameController
+ ConsoleApp "1" *-- "1" GameController
+ WordMatchApp "1" --> "0..1" GameSession : current round
+ ConsoleApp ..> GameSession : uses local round
+ WordMatchApp ..> I18n
+ ConsoleApp ..> I18n
+}
+Main ..> WordMatchApp : default
+Main ..> ConsoleApp : --console
+GameController ..> InvalidGameException : validates
+note bottom of WordOrder
+Strategy: istemci yalnızca WordOrder sözleşmesini bilir.
+Konsolda seçilen politika çalışma zamanında değişir.
+Swing varsayılanı: ShuffledWordOrder.
+end note
+legend bottom
+  + public    - private    ..|> interface realization
+  *-- composition    o-- aggregation    --> association
+  Diyagram açıklık için yardımcı metotları ve iç Swing kart sınıflarını özetler.
+endlegend
+@enduml

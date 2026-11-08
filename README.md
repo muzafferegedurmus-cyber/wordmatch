@@ -1,60 +1,105 @@
-# WordMatch
+# WordMatch — Prog 2 Java OOP projesi
 
-iPad ve tarayıcı için paylaşılabilir oyun: [WordMatch Web](https://wordmatch-ipad-muzaf.subtlepause4.chatgpt.site). Bağlantıya sahip herkes açabilir; ilk açılış internet gerektirir. Java/Swing projesi masaüstü sürümüdür. IntelliJ IDEA ve ders anlatımı için [INTELLIJ-REHBER.md](INTELLIJ-REHBER.md) dosyasına bak.
+**Öğrenci:** Muzaffer ege durmus  
+**Teknoloji:** Java 21, Maven, Swing ve konsol  
+**Lisans:** MIT ([LICENSE](LICENSE))  
+**Durum:** Yerel kod uyarlaması; GitHub/GitLab deposu, hocanın erişimi ve nihai teslim sürümü henüz tamamlanmadı.
 
-Java 21 ve Swing ile çevrimdışı kelime eşleştirme oyunu. Harici Java kütüphanesi, hesap veya ağ bağlantısı gerektirmez. Java 21 veya daha yeni bir **JDK** gerekir (`java -version`, `javac -version`).
+WordMatch, yabancı dil öğrenen kişinin bildiği dildeki sözcükleri başka bir dildeki karşılıklarıyla eşleştirmesini sağlar. Kısa turlar, anında geri bildirim ve kalıcı tercihler sunar. Türkçe, İngilizce, İtalyanca, Fransızca ve Almanca arasında 20 yönlü dil çifti ve her seviyede 25 olmak üzere toplam 75 kelime vardır.
 
-## Başlatma
+## Kurulum, derleme, test ve çalıştırma
 
-Windows’ta `run.bat` dosyasına çift tıkla veya proje klasöründe PowerShell terminalini aç:
+JDK 21 veya daha yenisi gerekir. `java -version` ve `javac -version` ile kontrol et. Maven Wrapper depoda bulunur; ayrıca Maven kurmak gerekmez. **İlk derleme** Maven ve test bağımlılıklarını indirmek için internet kullanır. Oluşan oyun JAR dosyası daha sonra çevrimdışı çalışır.
+
+Windows PowerShell, proje klasöründe:
 
 ```powershell
-.\run.ps1
+# Temiz derleme ve bütün JUnit testleri
+.\mvnw.cmd clean verify
+
+# Mevcut masaüstü oyunu
+java -jar target/wordmatch.jar
+
+# PDF'de zorunlu tutulan konsol arayüzü
+java -jar target/wordmatch.jar --console
 ```
 
-PowerShell betik çalıştırmayı engellerse `run.bat` kullanabilirsin. Elle derlemek için:
+macOS/Linux: `./mvnw clean verify`, ardından aynı `java -jar` komutları. Gerekirse önce `chmod +x mvnw`. JDK bulunamazsa `JAVA_HOME` değerini JDK klasörüne ayarla veya IntelliJ'nin Project SDK ayarını yap. Eski kök dizindeki `javac *.java` komutu artık kullanılmaz; kaynaklar standart Maven yapısına taşındı.
 
-```powershell
-New-Item -ItemType Directory -Force build/classes
-javac --release 21 -encoding UTF-8 -d build/classes *.java
-Copy-Item data build/classes -Recurse -Force
-java -cp build/classes Main
+Windows'ta `run.bat` Swing oyununu, `run-console.bat` konsolu derleyip açar. IntelliJ için **Open → pom.xml → Open as Project → JDK 21 → Maven Reload**. `src/main/java/wordmatch/Main.java` içindeki yeşil Run düğmesi Swing'i açar; Run Configuration → Program arguments alanına `--console` yazmak konsolu açar. Ayrıntılar: [IntelliJ rehberi](INTELLIJ-REHBER.md).
+
+## Örnek kullanım
+
+Swing: **Oyna → Türkçe → English → Kolay → Turu Başlat**. Her sütundan bir kart seç; aynı sütunda seçimini değiştirebilirsin. Doğru eşleşme +10, yanlış deneme −5 puandır. Puan negatif olabilir. Doğru kartlar kilitlenir; yanlış kartlar 650 ms sonra tekrar seçilebilir. Bütün çiftler eşleşince veya süre bitince sonuç gösterilir. Menüye dönmek zamanlayıcıları durdurur.
+
+| Zorluk | Çift | Süre |
+|---|---:|---:|
+| Kolay | 4 | 60 saniye |
+| Orta | 6 | 45 saniye |
+| Zor | 8 | 35 saniye |
+
+Konsol örneği:
+
+```text
+1. Oyna  2. Ayarlar  3. Nasıl Oynanır?  4. Kelime listesi  5. Çıkış
+1
+Bildiğim dil: 1 (Türkçe)
+Pratik yapacağım dil: 2 (English)
+Zorluk: 1 (Kolay)
+Sıra: 1 (rastgele) veya 2 (alfabetik çalışma sırası)
+1 3
+q
 ```
 
-macOS/Linux: `mkdir -p build/classes && javac --release 21 -encoding UTF-8 -d build/classes *.java && cp -R data build/classes/ && java -cp build/classes Main`
+Son iki giriş, sol sütundaki 1. ve sağ sütundaki 3. kartı eşleştirmeyi denemek ve turdan çıkmak içindir. Çiftlerin konumu her tur değişir. Konsolda süre bitince Enter beklenmeden sonuç gösterilir. Menüde 4, seçilen dilde alfabetik kelime listesini gösterir. Konsol ayarlarından arayüz dili değişir; tema ve ses Swing'e özgüdür.
 
-VS Code’da bu klasörü aç, **Extension Pack for Java** eklentisini ve JDK 21+ kur. `Main.java` içindeki `main` üzerinde **Run** seç veya Run and Debug panelindeki **WordMatch** yapılandırmasını çalıştır. VS Code gerekmez; terminal komutları bağımsız çalışır.
+## Kaynak düzeni
 
-## Oyun
+```text
+src/main/java/wordmatch/
+  Main.java                 Başlatıcı; --console veya Swing
+  domain/                   Word, GameSession, Language, GameRules, InvalidGameException
+  service/                  GameController, WordOrder ve iki stratejisi
+  persistence/              WordRepository, AppSettings
+  ui/                       WordMatchApp, ConsoleApp, I18n, SoundEffects
+src/main/resources/data/words.tsv
+src/test/java/wordmatch/     JUnit testleri ve isteğe bağlı Swing kontrolü
+docs/                       UML, kullanıcı hikâyeleri, tasarım, kontrol listesi
+```
 
-Oyna → bildiğin dil, pratik dili ve zorluk → Turu Başlat. Türkçe, İngilizce, İtalyanca, Fransızca ve Almanca arasında 20 yönlü dil çifti desteklenir. İki dil aynı olamaz. Sütunlar ayrı ayrı karıştırılır.
+Yeni kelimeler `src/main/resources/data/words.tsv` dosyasına UTF-8 ve sekmeyle ayrılan sekiz sütunla eklenir: `id, difficulty, category, TR, EN, IT, FR, DE`. Kimlik benzersizdir; zorluk `EASY`, `MEDIUM` veya `HARD` olmalıdır. Kurallar `domain/GameRules.java` içindedir. Veriyi veya kodu değiştirdikten sonra yeniden derle.
 
-Her sütundan bir kart seç. Aynı sütunda seçim değiştirilebilir. Doğru çift **+10**, yanlış deneme **−5** puan; puan negatif olabilir. Yeşil kartlar tamamlanır, kırmızı kartlar 650 ms sonra yeniden kullanılabilir. Geri bildirim sırasında yeni denemeler kilitlenir. Bütün çiftler eşleşince veya süre dolunca sonuç görünür. Menüye dönmek turu bırakır ve zamanlayıcıları durdurur. Tekrar Oyna aynı dil/zorlukla yeni rastgele tur açar.
+## OOP ve tasarım deseni
 
-| Seviye | Çift | Süre | Havuz |
-|---|---:|---:|---:|
-| Kolay | 4 | 60 sn | 25 |
-| Orta | 6 | 45 sn | 25 |
-| Zor | 8 | 35 sn | 25 |
+**Strategy**: `WordOrder` ortak sözleşmedir. `ShuffledWordOrder` sütunu karıştırır; `AlphabeticalWordOrder` dilin karşılaştırıcısıyla alfabetik sıralar. `GameController` somut türü bilmeden `arrange` çağırır. Konsol oyuncusu politika seçerek çalışma zamanındaki davranışı değiştirir. Böylece puanlama ve tur mantığını değiştirmeden standart oyun ile alfabetik çalışma sırası sağlanır. Swing varsayılan olarak her iki sütunu bağımsız karıştırır.
 
-Ayarlar: 5 arayüz dili, açık/koyu tema, yeşil/mavi/mor vurgu. Seçimler anında uygulanır ve kullanıcı klasöründeki `.wordmatch/settings.properties` dosyasına kaydedilir. Dil çifti ve zorluk da saklanır. Fabrika tercihleri Türkçe → İngilizce, kolay, açık tema ve yeşildir.
+- **Kapsülleme:** durum alanları private; geçerli nesneler kurucularda oluşturulur, ayarlar doğrulayan setter metotlarıyla değişir. `Word` kaydı ve dışarı dönen listeler değiştirilemez.
+- **Soyutlama / kalıtım / çok biçimlilik:** `WordOrder` arayüzünün iki somut uygulamasında `@Override arrange` vardır. İstemci ortak arayüz tipini kullanır. Swing penceresi ayrıca `JFrame` sınıfından kalıtım alır.
+- **İlişkiler:** bir havuz 75 veya daha fazla kelime içerir; bir tur 4/6/8 kelimeyi paylaşır. Controller bir depo ve bir sıralama politikası kullanır.
+- **Koleksiyonlar / generics / sıralama:** `List<Word>`, `Set<String>`, `ArrayList<Word>` ve `Comparator.comparing` kullanılır.
+- **Özel hata:** `InvalidGameException`; aynı dil çifti, geçersiz kart numarası, eksik çeviri veya geçersiz tur nesnesi gibi alan hatalarını temsil eder.
+- **Kalıcılık:** UTF-8 kelime havuzu okunur; tercihler kullanıcı klasöründeki `.wordmatch/settings.properties` dosyasına yazılıp tekrar yüklenir. Dosya okuma/yazmada try-with-resources vardır. Kaydetme hatası kullanıcıya bildirilir. GUI'de disk ve ses işlemleri EDT dışında yürür.
 
-Kart seçildiğinde kısa ve düşük sesli bir ton çalar. Ayarlar → Oyun sesleri ile kapatılabilir; tercih saklanır. Ses yerel olarak üretilir, dosya indirilmez. Ses aygıtı kullanılamıyorsa oyun sessiz devam eder. `SoundEffects.java` içindeki ton frekansı, süre ve genlik değiştirilerek ses özelleştirilebilir. Ses işlemleri ve ayarların diske yazılması arka plandadır; ayarlar ekranı yerinde güncellenir.
-
-## Nereden değiştirilir?
-
-- `GameRules.java`: puanlar, geri bildirim süresi, çift sayıları ve tur süreleri.
-- `data/words.tsv`: UTF-8 kelimeler. Her satır **sekme** ile ayrılmış 8 alan içerir: `id`, `difficulty`, `category`, `TR`, `EN`, `IT`, `FR`, `DE`. Zorluk `EASY`, `MEDIUM` veya `HARD`; kimlik benzersiz olmalı. Her seviyede en az 25 satır bulundur. Yeni satırı ekleyip yeniden derle/çalıştır. Kategori öğrenme içeriğini düzenlemek için saklanır, oyunda filtre değildir. Aynı dilde eş anlamlı/çok anlamlı girdiler eklerken karşılıkları kontrol et; aynı sütundaki aynı yazımlı sözcükler bir turda birlikte seçilmez.
-- `WordRepository.java`: dosya okuma, doğrulama ve tekrar içermeyen rastgele seçim.
-- `GameSession.java`: arayüzden bağımsız puan, deneme kilidi, eşleşme ve tur bitiş mantığı.
-- `WordMatchApp.java`: Swing ekranları, kart çizimi, tema ve `javax.swing.Timer`.
-- `I18n.java`: bütün menü ve oyun çevirileri; sıralama TR, EN, IT, FR, DE.
-- `AppSettings.java`: tercih yükleme/kaydetme. `Main.java`: Swing EDT başlangıcı.
+[UML şeması](docs/class-diagram.svg) · [Düzenlenebilir UML](docs/class-diagram.puml) · [Tasarım açıklaması](docs/design.md) · [Kullanıcı hikâyeleri](docs/user-stories.md) · [PDF uygunluk kontrolü](docs/assignment-checklist.md)
 
 ## Kontroller
 
+`mvnw clean verify`, JUnit testlerini çalıştırır; test raporları `target/surefire-reports` altında oluşur. Testler 20 dil yönünü üç zorlukta, negatif puanı, hızlı tekrarları, bitişleri, Strategy değişimini, veri kalıcılığını ve konsol girişlerini kontrol eder. Kişisel ayarlar kullanılmaz; geçici klasörler kullanılır.
+
+Grafik ortamda ek Swing regresyon kontrolü:
+
 ```powershell
-.\run.ps1 -Test
+.\run.ps1 -UiTest
 ```
 
-Test; 20 dil yönünü her zorlukta çok sayıda rastgele turla, doğru/yanlış ve hızlı tekrar tıklamaları, negatif puan, tur bitişleri, yeni tur ve diske ayar yazıp yeniden yüklemeyi kontrol eder. Grafik ortam varsa gerçek Swing penceresinde seçim değişimi, aynı dil engeli, sonuç/tekrar oyna, menüde zamanlayıcının durması ve pencere yeniden açıldığında tercihlerin korunması da denenir. Süre sonu testinde Timer dinleyicileri beklemeden tetiklenir. Testler kişisel ayarları değiştirmez; geçici ayar dosyası kullanır. Ekran görüntüleri `build/screenshots` klasörüne yazılır.
+Bu kontrol gerçek Swing penceresini açar; tema/dil güncelleme, yavaş disk sırasında tepkisellik, doğru/yanlış eşleşme ve zamanlayıcıların durmasını doğrular. Normal Maven/JUnit testi grafik ekran istemez.
+
+## Teslim ve bilinen sınırlar
+
+PDF son teslim tarihi: **29 Kasım 2026**. PDF'nin erken bölümleri testleri isteğe bağlı saysa da son teslim listesi JUnit istediği için JUnit eklendi.
+
+GitHub/GitLab deposu, hoca erişimi, çevrimiçi issue/PR geçmişi ve final tag/release kullanıcının isteğiyle sonraya bırakıldı. Yerel sürüm geçmişi uyarlamadan önceki oyunu ve gerçek uyarlama adımlarını kaydeder; geçmişe dönük commit veya sahte PR oluşturulmaz. “Geliştirmeden önce hocayla paylaşım” şartı geriye dönük tamamlanmış sayılamaz; hocaya açıklanmalıdır. [Teslim hazırlığı](docs/submission.md).
+
+Sonuç geçmişi/veritabanı yoktur; yalnızca tercihler saklanır. Eş anlamlıların anlamsal doğruluğu veri ekleyen kişi tarafından kontrol edilmelidir. Ses aygıtı yoksa oyun sessiz devam eder. iPad için daha önce hazırlanan web sürümü Java ödevi tesliminin parçası değildir; ayrı projedir ve bu uyarlamada değiştirilmedi.
+
+**Katkı açıklaması:** Öğrenci Muzaffer ege durmus. Kod, belge ve test hazırlığında Codex yapay zekâ desteği kullanılmıştır. Öğrenci teslimden önce kodu incelemeli, açıklayabilmeli ve dersin yapay zekâ kullanım politikasına uymalıdır. PDF'de ayrıca açık bir yapay zekâ politikası belirtilmemiştir. MIT proje lisansı, bağımlılıkların lisanslarını değiştirmez; Maven Wrapper kendi Apache-2.0 bildirimleriyle korunur.

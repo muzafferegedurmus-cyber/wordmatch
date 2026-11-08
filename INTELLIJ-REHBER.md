@@ -1,53 +1,44 @@
-# WordMatch — IntelliJ IDEA ve ders anlatımı
+# IntelliJ IDEA: güncellenmiş WordMatch projesi
 
-## Projeyi aç
+## Aç ve çalıştır
 
-1. IntelliJ IDEA → **Open** → bu `wordgame` klasörünü seç.
-2. **File → Project Structure → Project → SDK** bölümünde JDK 21 veya daha yeni bir JDK seç. Bu bilgisayarda JDK 21, `C:\Program Files\Java\jdk-21.0.12.1` klasöründe mevcut.
-3. En kolay başlangıç: IntelliJ'nin **Terminal** panelinde aşağıdaki komutları çalıştır. IDE proje yapılandırmasına ihtiyaç duymadan derlenir.
-4. Editördeki yeşil Run düğmesi için proje kökünü **Sources Root** olarak işaretle; `build` ve `web-ipad` klasörlerini **Excluded** yap. `data` klasörünü **Resources Root** olarak işaretle ve Project Structure → Modules → Sources bölümünde **Relative output path** değerini `data` yap. Böylece `/data/words.tsv` sınıf yolunda bulunur. Ardından `Main.java` içindeki `main` yanındaki Run düğmesine bas.
+1. Mevcut eski projeyi kapat; **File → Open** ile bu klasördeki **pom.xml** dosyasını seç, **Open as Project** de. Kaynakları elle “Sources Root” olarak işaretleme; Maven düzeni bunu belirler.
+2. **File → Project Structure → Project SDK**: JDK 21 veya daha yeni bir JDK seç. Bu bilgisayarda `C:\Program Files\Java\jdk-21.0.12.1` bulunuyor.
+3. Maven panelinden **Reload All Maven Projects** çalıştır. İlk eşitlemede internet gerekir.
+4. `src/main/java/wordmatch/Main.java` dosyasını aç. `main` yanındaki yeşil **Run** düğmesi pencereyi açar.
+5. Konsol için **Run → Edit Configurations → Program arguments** alanına `--console` yaz. Aynı Main sınıfı bu kez terminal menüsünü açar.
 
-## Terminal komutları (PowerShell)
+## Terminal panelinde gösterebileceğin komutlar
 
 ```powershell
-# Bu bilgisayardaki Java 21 araçlarını seç
-$jdk = 'C:\Program Files\Java\jdk-21.0.12.1'
+# Projeyi temizle, derle, JUnit testlerini çalıştır ve JAR oluştur
+.\mvnw.cmd clean verify
 
-# Derlenmiş .class dosyalarının klasörünü oluştur
-New-Item -ItemType Directory -Force build/classes
+# Swing arayüzü
+java -jar target/wordmatch.jar
 
-# Java kaynaklarını UTF-8 okuyarak Java 21 için derle
-& "$jdk\bin\javac.exe" --release 21 -encoding UTF-8 -d build/classes *.java
-
-# Kelime verisini sınıf yoluna kopyala
-Copy-Item data build/classes -Recurse -Force
-
-# Ana sınıfı başlat; Swing ayrı pencere açar
-& "$jdk\bin\java.exe" -cp build/classes Main
-
-# Testleri çalıştır
-& "$jdk\bin\java.exe" -cp build/classes WordMatchTest
+# Konsol arayüzü
+java -jar target/wordmatch.jar --console
 ```
 
-JDK başka bir bilgisayarda farklı klasördeyse ilk satırdaki yolu değiştir. JDK 21+ zaten PATH üzerindeyse `javac` ve `java` komutlarını doğrudan kullanabilirsin. Hazır kısa yol: `.\run.ps1` veya `run.bat`.
+JDK seçimi terminale yansımıyorsa bu bilgisayarda oturum için:
 
-## Hocaya anlatabileceğin akış
+```powershell
+$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21.0.12.1'
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+```
 
-| Dosya / kavram | Görevi |
-|---|---|
-| `Main.java`, `SwingUtilities.invokeLater` | Swing arayüzünü EDT adlı arayüz iş parçacığında başlatır. |
-| `WordMatchApp.java` | Menü, ayarlar, dil/zorluk seçimi, kartlar ve sonuç ekranını çizer. |
-| `GameSession.java` | Puanı, eşleşmeleri, yanlış denemeleri ve turun bitiş nedenini tutar. |
-| `GameRules.java` | +10/−5 puan, çift sayıları, süreler ve geri bildirim süresi burada değişir. |
-| `WordRepository.java` | TSV dosyasını UTF-8 okur; zorluk ve dillere göre rastgele, tekrarsız kelimeler seçer. |
-| `data/words.tsv` | Her satırda kimlik, zorluk, kategori ve beş dilde karşılık vardır. |
-| `I18n.java` | Menü ve mesajların beş dilde çevirilerini tutar. |
-| `AppSettings.java` | Tercihleri dosyaya kaydeder ve açılışta yükler. |
-| `SoundEffects.java` | Kısa seçim sesini üretir; ses aygıtını arka planda kullanır. |
-| `javax.swing.Timer` | Her saniye geri sayımı günceller; tur bitince durdurulur. |
-| `feedbackPending` | Geri bildirim sırasında aynı denemenin iki kere puanlanmasını önler. |
-| `ExecutorService` | Disk ve ses işlemlerinin arayüzü bekletmesini önler. |
+`clean` önceki Maven çıktılarını temizler. `verify` derleme, test ve paketleme aşamalarını çalıştırır. `java -jar` oluşan paketi başlatır. `--console` bizim Main sınıfının yorumladığı uygulama argümanıdır.
 
-## iPad sürümü ile fark
+## Kodları hangi sırayla çalışmalısın?
 
-Java/Swing sürümü bilgisayarda çalışır ve derste incelenecek asıl projedir. `web-ipad/dist` içindeki HTML, CSS ve JavaScript dosyaları aynı oyunun tarayıcı sürümüdür; Java kodu Safari içinde çalıştırılmaz. Web sürümü aynı 75 kelimeyi ve çevirileri kullanır. Verileri güncellemek için `python web-ipad/export-data.py` çalıştırılır. iPad sürümünün ilk açılışı internet gerektirir; bu sürümde çevrimdışı önbellekleme kurulmamıştır.
+1. `Main`: başlangıç ve arayüz seçimi.
+2. `GameRules`, `Language`, `Word`: kurallar, enum ve değiştirilemeyen kelime nesnesi.
+3. `GameSession`: bir yanlış ve bir doğru denemede hangi alanların değiştiğini takip et.
+4. `WordRepository`: dosya okuma ve tekrarsız kelime seçimi.
+5. `WordOrder` ve uygulamaları: aynı metot çağrısının farklı somut nesnelerde farklı çalışması.
+6. `GameController`: turu kurup seçilmiş politikayı çağırır.
+7. `ConsoleApp`, ardından `WordMatchApp`: modelin farklı arayüzlerden kullanımı.
+8. `AppSettings`: yükle, değiştir, kaydet; try-with-resources ve hatalar.
+
+[Sözlü anlatım rehberi](docs/oral-guide.md) her temel kavramı bu kodla eşleştirir. [UML](docs/class-diagram.svg) sınıfların ilişkilerini gösterir. Anlamadığın kodu ezberlemek yerine, girişini, yaptığı değişikliği ve çıktısını anlat.
