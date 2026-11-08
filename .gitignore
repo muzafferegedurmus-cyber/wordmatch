@@ -1,0 +1,11 @@
+build/
+*.class
+target/
+out/
+.idea/
+.vscode/
+*.iml
+.wordmatch/
+*.log
+.env*
+web-ipad/

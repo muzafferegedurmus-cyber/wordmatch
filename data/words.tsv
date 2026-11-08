@@ -1,0 +1,76 @@
+# id	difficulty	category	TR	EN	IT	FR	DE
+e01	EASY	animals	kedi	cat	gatto	chat	Katze
+e02	EASY	animals	köpek	dog	cane	chien	Hund
+e03	EASY	animals	kuş	bird	uccello	oiseau	Vogel
+e04	EASY	animals	balık	fish	pesce	poisson	Fisch
+e05	EASY	food	elma	apple	mela	pomme	Apfel
+e06	EASY	food	ekmek	bread	pane	pain	Brot
+e07	EASY	food	su	water	acqua	eau	Wasser
+e08	EASY	food	süt	milk	latte	lait	Milch
+e09	EASY	food	peynir	cheese	formaggio	fromage	Käse
+e10	EASY	food	yumurta	egg	uovo	œuf	Ei
+e11	EASY	home	ev	house	casa	maison	Haus
+e12	EASY	home	kapı	door	porta	porte	Tür
+e13	EASY	home	pencere	window	finestra	fenêtre	Fenster
+e14	EASY	home	masa	table	tavolo	table	Tisch
+e15	EASY	home	sandalye	chair	sedia	chaise	Stuhl
+e16	EASY	objects	kitap	book	libro	livre	Buch
+e17	EASY	nature	güneş	sun	sole	soleil	Sonne
+e18	EASY	nature	ay	moon	luna	lune	Mond
+e19	EASY	nature	ağaç	tree	albero	arbre	Baum
+e20	EASY	nature	çiçek	flower	fiore	fleur	Blume
+e21	EASY	colors	kırmızı	red	rosso	rouge	rot
+e22	EASY	colors	mavi	blue	blu	bleu	blau
+e23	EASY	colors	yeşil	green	verde	vert	grün
+e24	EASY	family	anne	mother	madre	mère	Mutter
+e25	EASY	family	baba	father	padre	père	Vater
+m01	MEDIUM	places	kütüphane	library	biblioteca	bibliothèque	Bibliothek
+m02	MEDIUM	places	hastane	hospital	ospedale	hôpital	Krankenhaus
+m03	MEDIUM	places	havalimanı	airport	aeroporto	aéroport	Flughafen
+m04	MEDIUM	places	eczane	pharmacy	farmacia	pharmacie	Apotheke
+m05	MEDIUM	travel	bavul	suitcase	valigia	valise	Koffer
+m06	MEDIUM	travel	bilet	ticket	biglietto	billet	Fahrkarte
+m07	MEDIUM	travel	yolculuk	journey	viaggio	voyage	Reise
+m08	MEDIUM	weather	yağmur	rain	pioggia	pluie	Regen
+m09	MEDIUM	weather	rüzgâr	wind	vento	vent	Wind
+m10	MEDIUM	weather	bulut	cloud	nuvola	nuage	Wolke
+m11	MEDIUM	jobs	öğretmen	teacher	insegnante	professeur	Lehrer
+m12	MEDIUM	jobs	doktor	doctor	medico	médecin	Arzt
+m13	MEDIUM	jobs	mühendis	engineer	ingegnere	ingénieur	Ingenieur
+m14	MEDIUM	actions	öğrenmek	to learn	imparare	apprendre	lernen
+m15	MEDIUM	actions	öğretmek	to teach	insegnare	enseigner	unterrichten
+m16	MEDIUM	actions	seyahat etmek	to travel	viaggiare	voyager	reisen
+m17	MEDIUM	actions	hatırlamak	to remember	ricordare	se souvenir	sich erinnern
+m18	MEDIUM	actions	unutmak	to forget	dimenticare	oublier	vergessen
+m19	MEDIUM	descriptions	hızlı	fast	veloce	rapide	schnell
+m20	MEDIUM	descriptions	yavaş	slow	lento	lent	langsam
+m21	MEDIUM	descriptions	pahalı	expensive	costoso	cher	teuer
+m22	MEDIUM	descriptions	ucuz	inexpensive	economico	bon marché	preiswert
+m23	MEDIUM	time	dün	yesterday	ieri	hier	gestern
+m24	MEDIUM	time	yarın	tomorrow	domani	demain	morgen
+m25	MEDIUM	time	hafta	week	settimana	semaine	Woche
+h01	HARD	concepts	sorumluluk	responsibility	responsabilità	responsabilité	Verantwortung
+h02	HARD	concepts	özgürlük	freedom	libertà	liberté	Freiheit
+h03	HARD	concepts	adalet	justice	giustizia	justice	Gerechtigkeit
+h04	HARD	concepts	başarı	success	successo	succès	Erfolg
+h05	HARD	concepts	başarısızlık	failure	fallimento	échec	Misserfolg
+h06	HARD	concepts	deneyim	experience	esperienza	expérience	Erfahrung
+h07	HARD	concepts	fırsat	opportunity	opportunità	occasion	Gelegenheit
+h08	HARD	concepts	karar	decision	decisione	décision	Entscheidung
+h09	HARD	concepts	güven	trust	fiducia	confiance	Vertrauen
+h10	HARD	qualities	sabır	patience	pazienza	patience	Geduld
+h11	HARD	qualities	cesaret	courage	coraggio	courage	Mut
+h12	HARD	qualities	merak	curiosity	curiosità	curiosité	Neugier
+h13	HARD	qualities	dürüstlük	honesty	onestà	honnêteté	Ehrlichkeit
+h14	HARD	society	çevre	environment	ambiente	environnement	Umwelt
+h15	HARD	society	sürdürülebilirlik	sustainability	sostenibilità	durabilité	Nachhaltigkeit
+h16	HARD	society	eşitlik	equality	uguaglianza	égalité	Gleichheit
+h17	HARD	society	dayanışma	solidarity	solidarietà	solidarité	Solidarität
+h18	HARD	actions	geliştirmek	to improve	migliorare	améliorer	verbessern
+h19	HARD	actions	araştırmak	to research	ricercare	faire des recherches	forschen
+h20	HARD	actions	karşılaştırmak	to compare	confrontare	comparer	vergleichen
+h21	HARD	actions	başarmak	to accomplish	realizzare	accomplir	vollbringen
+h22	HARD	actions	vazgeçmek	to give up	arrendersi	abandonner	aufgeben
+h23	HARD	descriptions	karmaşık	complex	complesso	complexe	komplex
+h24	HARD	descriptions	kaçınılmaz	inevitable	inevitabile	inévitable	unvermeidlich
+h25	HARD	descriptions	olağanüstü	extraordinary	straordinario	extraordinaire	außergewöhnlich
