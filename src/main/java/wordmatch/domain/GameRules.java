@@ -1,3 +1,6 @@
+package wordmatch.domain;
+
+
 /** Oyunun değiştirilebilir kuralları. */
 public final class GameRules {
     private GameRules() {}

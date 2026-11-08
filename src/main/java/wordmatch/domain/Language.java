@@ -1,3 +1,6 @@
+package wordmatch.domain;
+
+
 public enum Language {
     TR("Türkçe"), EN("English"), IT("Italiano"), FR("Français"), DE("Deutsch");
     public final String nativeName;

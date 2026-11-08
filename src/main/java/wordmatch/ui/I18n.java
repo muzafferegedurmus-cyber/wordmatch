@@ -1,3 +1,7 @@
+package wordmatch.ui;
+
+import wordmatch.domain.Language;
+
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -6,6 +10,15 @@ public final class I18n {
     private I18n() {}
     private static final Map<String, String[]> TEXT = new HashMap<>();
     static {
+        add("vocabulary", "Kelime listesi", "Vocabulary", "Vocabolario", "Vocabulaire", "Wortliste");
+        add("numberRange", "{0} ile {1} arasında sayı gir.", "Enter a number from {0} to {1}.", "Inserisci un numero da {0} a {1}.", "Entrez un nombre de {0} à {1}.", "Gib eine Zahl von {0} bis {1} ein.");
+        add("randomOrder", "Rastgele sıra (standart)", "Random order (standard)", "Ordine casuale (standard)", "Ordre aléatoire (standard)", "Zufällige Reihenfolge (Standard)");
+        add("alphabeticalOrder", "Alfabetik sıra (çalışma)", "Alphabetical order (study)", "Ordine alfabetico (studio)", "Ordre alphabétique (étude)", "Alphabetische Reihenfolge (Übung)");
+        add("consoleMatch", "Sol ve sağ kart numarası gir (örnek: 1 3). Menü: q", "Enter left and right card numbers (example: 1 3). Menu: q", "Inserisci i numeri sinistro e destro (esempio: 1 3). Menu: q", "Entrez les numéros gauche et droit (exemple : 1 3). Menu : q", "Gib linke und rechte Kartennummer ein (Beispiel: 1 3). Menü: q");
+        add("invalidMatch", "Geçerli iki kart numarası girmelisin.", "Enter two valid card numbers.", "Inserisci due numeri validi.", "Entrez deux numéros valides.", "Gib zwei gültige Kartennummern ein.");
+        add("alreadyMatched", "Bu kart zaten eşleştirildi.", "This card is already matched.", "Questa carta è già abbinata.", "Cette carte est déjà associée.", "Diese Karte wurde bereits zugeordnet.");
+        add("abandoned", "Tur bırakıldı.", "Round abandoned.", "Turno abbandonato.", "Partie abandonnée.", "Runde abgebrochen.");
+        add("inputError", "Konsol girişi okunamadı.", "Unable to read console input.", "Impossibile leggere l’input.", "Impossible de lire la saisie.", "Konsoleneingabe konnte nicht gelesen werden.");
         add("sound", "Oyun sesleri", "Game sounds", "Suoni di gioco", "Sons du jeu", "Spielklänge");
         add("soundOn", "Açık", "On", "Attivi", "Activés", "Ein");
         add("soundOff", "Kapalı", "Off", "Disattivati", "Désactivés", "Aus");

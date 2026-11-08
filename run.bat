@@ -1,8 +1,12 @@
 @echo off
+chcp 65001 >nul
 cd /d "%~dp0"
-if not exist build\classes mkdir build\classes
-javac --release 21 -encoding UTF-8 -d build\classes *.java
-if errorlevel 1 exit /b 1
-if not exist build\classes\data mkdir build\classes\data
-copy /Y data\words.tsv build\classes\data\words.tsv >nul
-java -cp build\classes Main
+call mvnw.cmd -q -DskipTests package
+if errorlevel 1 goto error
+java -jar target\wordmatch.jar %*
+if errorlevel 1 goto error
+exit /b 0
+:error
+echo Baslatma basarisiz. JDK 21+ ve ilk derleme icin internet gerekir.
+pause
+exit /b 1
