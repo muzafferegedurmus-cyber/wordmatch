@@ -1,3 +1,7 @@
+package wordmatch.persistence;
+
+import wordmatch.domain.*;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -5,17 +9,41 @@ import java.util.Properties;
 
 /** Tercihler kullanıcı klasöründeki .wordmatch/settings.properties dosyasında saklanır. */
 public class AppSettings {
-    public Language interfaceLanguage = Language.TR;
-    public Language knownLanguage = Language.TR;
-    public Language practiceLanguage = Language.EN;
-    public GameRules.Difficulty difficulty = GameRules.Difficulty.EASY;
-    public boolean dark = false;
-    public String accent = "green";
-    public boolean soundEnabled = true;
+    private Language interfaceLanguage = Language.TR;
+    private Language knownLanguage = Language.TR;
+    private Language practiceLanguage = Language.EN;
+    private GameRules.Difficulty difficulty = GameRules.Difficulty.EASY;
+    private boolean dark = false;
+    private String accent = "green";
+    private boolean soundEnabled = true;
     private final Path file;
 
     public AppSettings() { this(Path.of(System.getProperty("user.home"), ".wordmatch", "settings.properties")); }
-    public AppSettings(Path file) { this.file = file; load(); }
+    public AppSettings(Path file) { this.file = java.util.Objects.requireNonNull(file); load(); }
+    public Language getInterfaceLanguage() { return interfaceLanguage; }
+    public void setInterfaceLanguage(Language value) { interfaceLanguage = valid(value); }
+    public Language getKnownLanguage() { return knownLanguage; }
+    public void setKnownLanguage(Language value) { knownLanguage = valid(value); }
+    public Language getPracticeLanguage() { return practiceLanguage; }
+    public void setPracticeLanguage(Language value) { practiceLanguage = valid(value); }
+    public GameRules.Difficulty getDifficulty() { return difficulty; }
+    public void setDifficulty(GameRules.Difficulty value) {
+        if (value == null) throw new InvalidGameException("Zorluk boş olamaz.");
+        difficulty = value;
+    }
+    public boolean isDark() { return dark; }
+    public void setDark(boolean value) { dark = value; }
+    public String getAccent() { return accent; }
+    public void setAccent(String value) {
+        if (value == null || !java.util.Set.of("green", "blue", "purple").contains(value)) throw new InvalidGameException("Geçersiz vurgu rengi.");
+        accent = value;
+    }
+    public boolean isSoundEnabled() { return soundEnabled; }
+    public void setSoundEnabled(boolean value) { soundEnabled = value; }
+    private Language valid(Language value) {
+        if (value == null) throw new InvalidGameException("Dil boş olamaz.");
+        return value;
+    }
     private void load() {
         if (!Files.exists(file)) return;
         Properties p = new Properties();

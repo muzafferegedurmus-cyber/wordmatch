@@ -1,3 +1,10 @@
+package wordmatch.ui;
+
+import wordmatch.domain.*;
+import wordmatch.persistence.*;
+import wordmatch.service.*;
+import wordmatch.ui.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -52,12 +59,12 @@ public class WordMatchTest {
         Path folder = Files.createTempDirectory("wordmatch-test-");
         Path file = folder.resolve("settings.properties");
         AppSettings settings = new AppSettings(file);
-        settings.dark = true; settings.accent = "purple"; settings.interfaceLanguage = Language.DE;
-        settings.knownLanguage = Language.IT; settings.practiceLanguage = Language.FR; settings.difficulty = GameRules.Difficulty.HARD; settings.save();
+        settings.setDark(true); settings.setAccent("purple"); settings.setInterfaceLanguage(Language.DE);
+        settings.setKnownLanguage(Language.IT); settings.setPracticeLanguage(Language.FR); settings.setDifficulty(GameRules.Difficulty.HARD); settings.save();
         AppSettings loaded = new AppSettings(file);
-        check(loaded.soundEnabled, "Sound enabled by default");
-        settings.soundEnabled = false; settings.save();
-        check(!new AppSettings(file).soundEnabled, "Sound preference persists");
+        check(loaded.isSoundEnabled(), "Sound enabled by default");
+        settings.setSoundEnabled(false); settings.save();
+        check(!new AppSettings(file).isSoundEnabled(), "Sound preference persists");
         byte[] samples = SoundEffects.selectionSamples();
         int peak = 0;
         for (int i = 0; i < samples.length; i += 2) peak = Math.max(peak, Math.abs((short)((samples[i] & 255) | samples[i+1] << 8)));
@@ -68,8 +75,8 @@ public class WordMatchTest {
             audio.playSelection();
             Thread.sleep(200); // Ses çıkışına gerçek bir kısa oynatma fırsatı ver.
         }
-        check(loaded.dark && loaded.accent.equals("purple") && loaded.interfaceLanguage == Language.DE, "Appearance persistence");
-        check(loaded.knownLanguage == Language.IT && loaded.practiceLanguage == Language.FR && loaded.difficulty == GameRules.Difficulty.HARD, "Round persistence");
+        check(loaded.isDark() && loaded.getAccent().equals("purple") && loaded.getInterfaceLanguage() == Language.DE, "Appearance persistence");
+        check(loaded.getKnownLanguage() == Language.IT && loaded.getPracticeLanguage() == Language.FR && loaded.getDifficulty() == GameRules.Difficulty.HARD, "Round persistence");
         for (Language language : Language.values()) {
             Field mapField = I18n.class.getDeclaredField("TEXT"); mapField.setAccessible(true);
             for (Object key : ((Map<?, ?>) mapField.get(null)).keySet()) check(!I18n.text(language, (String)key).isBlank(), "Translation exists");
@@ -91,21 +98,21 @@ public class WordMatchTest {
                     check(((AbstractButton)find(app, "menu")).getText().equals("Main menu"), "Language applies immediately");
                     select(app, "interface", Language.TR); select(app, "theme", "light");
                     awaitSave(app);
-                    check(!new AppSettings(file).dark && new AppSettings(file).interfaceLanguage == Language.TR, "UI saves settings");
+                    check(!new AppSettings(file).isDark() && new AppSettings(file).getInterfaceLanguage() == Language.TR, "UI saves settings");
                     click(app, "menu"); capture(app, "menu.png"); click(app, "play");
                     select(app, "known", Language.TR); select(app, "practice", Language.TR);
                     check(!find(app, "start").isEnabled(), "Same languages blocked");
                     select(app, "practice", Language.EN); select(app, "difficulty", GameRules.Difficulty.HARD); click(app, "start");
                     GameSession session = (GameSession) field(app, "session");
-                    String first = session.words.get(0).id(), second = session.words.get(1).id();
+                    String first = session.words().get(0).id(), second = session.words().get(1).id();
                     click(app, "left-" + first); click(app, "left-" + second); click(app, "right-" + second);
                     check(session.score() == 10, "Selection change works");
                     click(app, "left-" + first); check(session.score() == 10, "Feedback locks UI");
                     fireTimer(app, "feedbackTimer");
-                    click(app, "left-" + first); click(app, "right-" + session.words.get(2).id());
+                    click(app, "left-" + first); click(app, "right-" + session.words().get(2).id());
                     check(session.score() == 5 && session.mistakes() == 1, "Wrong UI match");
                     fireTimer(app, "feedbackTimer"); capture(app, "game.png");
-                    for (var word : session.words) if (!session.isMatched(word.id())) {
+                    for (var word : session.words()) if (!session.isMatched(word.id())) {
                         click(app, "left-" + word.id()); click(app, "right-" + word.id()); fireTimer(app, "feedbackTimer");
                     }
                     check(find(app, "again") != null && !((javax.swing.Timer)field(app, "countdown")).isRunning(), "Completion stops timer");
@@ -149,7 +156,7 @@ public class WordMatchTest {
             });
             check(writing.await(2, java.util.concurrent.TimeUnit.SECONDS), "Background save started");
             SwingUtilities.invokeAndWait(() -> {
-                check(slowSettings.dark, "Theme changed while disk blocked");
+                check(slowSettings.isDark(), "Theme changed while disk blocked");
                 select(window[0], "accent", "blue");
                 select(window[0], "interface", Language.FR);
                 check(((AbstractButton)find(window[0], "menu")).getText().equals("Menu principal"), "UI responsive during blocked write");
@@ -159,7 +166,7 @@ public class WordMatchTest {
             release.countDown();
             awaitSave(window[0]);
             AppSettings result = new AppSettings(file);
-            check(result.dark && result.accent.equals("blue") && result.interfaceLanguage == Language.FR, "Queued saves preserve latest settings");
+            check(result.isDark() && result.getAccent().equals("blue") && result.getInterfaceLanguage() == Language.FR, "Queued saves preserve latest settings");
         } finally {
             release.countDown();
             if (window[0] != null) SwingUtilities.invokeAndWait(window[0]::dispose);

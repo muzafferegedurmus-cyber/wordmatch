@@ -1,3 +1,10 @@
+package wordmatch.ui;
+
+import wordmatch.domain.*;
+import wordmatch.persistence.*;
+import wordmatch.service.*;
+import wordmatch.ui.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -14,7 +21,7 @@ public class WordMatchApp extends JFrame {
     private final ExecutorService settingsWriter = Executors.newSingleThreadExecutor(r -> new Thread(r, "wordmatch-settings"));
     private Future<?> latestSave;
     private WordRepository repository;
-    private final Random random = new Random();
+    private GameController controller;
     private JPanel root;
     private Color background, surface, foreground, muted, border, accent;
     private GameSession session;
@@ -35,24 +42,24 @@ public class WordMatchApp extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override public void windowClosed(WindowEvent event) { stopTimers(); sounds.close(); settingsWriter.shutdown(); }
         });
-        try { repository = new WordRepository(); }
+        try { repository = new WordRepository(); controller = new GameController(repository); }
         catch (IOException e) {
             System.err.println(e.getMessage());
             JOptionPane.showMessageDialog(this, t("dataError"), t("error"), JOptionPane.ERROR_MESSAGE);
         }
         showMenu();
     }
-    private String t(String key, Object... args) { return I18n.text(settings.interfaceLanguage, key, args); }
+    private String t(String key, Object... args) { return I18n.text(settings.getInterfaceLanguage(), key, args); }
     private void colors() {
-        background = new Color(settings.dark ? 0x111B29 : 0xF3F7F4);
-        surface = new Color(settings.dark ? 0x1D2A3A : 0xFFFFFF);
-        foreground = new Color(settings.dark ? 0xEDF3FA : 0x20342D);
-        muted = new Color(settings.dark ? 0xACBDCE : 0x61766B);
-        border = new Color(settings.dark ? 0x3B4C60 : 0xD7E3DB);
-        accent = new Color(switch (settings.accent) {
-            case "blue" -> settings.dark ? 0x60A5FA : 0x1765C0;
-            case "purple" -> settings.dark ? 0xC4A0FF : 0x7946BA;
-            default -> settings.dark ? 0x65D89A : 0x20834B;
+        background = new Color(settings.isDark() ? 0x111B29 : 0xF3F7F4);
+        surface = new Color(settings.isDark() ? 0x1D2A3A : 0xFFFFFF);
+        foreground = new Color(settings.isDark() ? 0xEDF3FA : 0x20342D);
+        muted = new Color(settings.isDark() ? 0xACBDCE : 0x61766B);
+        border = new Color(settings.isDark() ? 0x3B4C60 : 0xD7E3DB);
+        accent = new Color(switch (settings.getAccent()) {
+            case "blue" -> settings.isDark() ? 0x60A5FA : 0x1765C0;
+            case "purple" -> settings.isDark() ? 0xC4A0FF : 0x7946BA;
+            default -> settings.isDark() ? 0x65D89A : 0x20834B;
         });
     }
     private JPanel newScreen() {
@@ -79,7 +86,7 @@ public class WordMatchApp extends JFrame {
         return label;
     }
     private RoundedButton button(String text, String name, Runnable action, boolean primary) {
-        RoundedButton button = new RoundedButton(text, primary ? accent : surface, primary ? (settings.dark ? background : Color.WHITE) : foreground);
+        RoundedButton button = new RoundedButton(text, primary ? accent : surface, primary ? (settings.isDark() ? background : Color.WHITE) : foreground);
         button.setName(name);
         button.addActionListener(event -> action.run());
         return button;
@@ -147,7 +154,7 @@ public class WordMatchApp extends JFrame {
                 if (value instanceof GameRules.Difficulty d) l.setText(t(d.labelKey) + " — " + t("levelInfo", d.pairs, d.seconds));
                 else if (value instanceof String key) l.setText(t(key));
                 l.setBackground(chosen ? accent : surface);
-                l.setForeground(chosen ? (settings.dark ? background : Color.WHITE) : foreground);
+                l.setForeground(chosen ? (settings.isDark() ? background : Color.WHITE) : foreground);
                 return l;
             }
         });
@@ -163,15 +170,15 @@ public class WordMatchApp extends JFrame {
         newScreen(); header("", this::showMenu);
         JPanel form = vertical(); gap(form, 38);
         form.add(centered(t("setup"), 26, foreground)); gap(form, 30);
-        JComboBox<Language> known = combo(Language.values(), settings.knownLanguage, "known");
-        JComboBox<Language> practice = combo(Language.values(), settings.practiceLanguage, "practice");
-        JComboBox<GameRules.Difficulty> difficulty = combo(GameRules.Difficulty.values(), settings.difficulty, "difficulty");
+        JComboBox<Language> known = combo(Language.values(), settings.getKnownLanguage(), "known");
+        JComboBox<Language> practice = combo(Language.values(), settings.getPracticeLanguage(), "practice");
+        JComboBox<GameRules.Difficulty> difficulty = combo(GameRules.Difficulty.values(), settings.getDifficulty(), "difficulty");
         field(form, "known", known); field(form, "practice", practice); field(form, "difficulty", difficulty);
         JLabel warning = centered(" ", 16, new Color(0xCB4343)); addWide(form, warning, 28); gap(form, 12);
         RoundedButton start = button(t("start") + "  →", "start", () -> {
-            settings.knownLanguage = (Language) known.getSelectedItem();
-            settings.practiceLanguage = (Language) practice.getSelectedItem();
-            settings.difficulty = (GameRules.Difficulty) difficulty.getSelectedItem();
+            settings.setKnownLanguage((Language) known.getSelectedItem());
+            settings.setPracticeLanguage((Language) practice.getSelectedItem());
+            settings.setDifficulty((GameRules.Difficulty) difficulty.getSelectedItem());
             saveSettings(); startRound();
         }, true);
         Runnable validate = () -> { boolean valid = known.getSelectedItem() != practice.getSelectedItem(); start.setEnabled(valid); warning.setText(valid ? " " : t("different")); };
@@ -194,17 +201,17 @@ public class WordMatchApp extends JFrame {
         JPanel form = vertical(); gap(form, 20);
         JLabel title = centered(t("settings"), 32, foreground); title.putClientProperty("textKey", "settings");
         form.add(title); gap(form, 20);
-        JComboBox<Language> language = combo(Language.values(), settings.interfaceLanguage, "interface");
-        JComboBox<String> theme = combo(new String[]{"light", "dark"}, settings.dark ? "dark" : "light", "theme");
-        JComboBox<String> accentBox = combo(new String[]{"green", "blue", "purple"}, settings.accent, "accent");
-        JComboBox<String> sound = combo(new String[]{"soundOn", "soundOff"}, settings.soundEnabled ? "soundOn" : "soundOff", "sound");
+        JComboBox<Language> language = combo(Language.values(), settings.getInterfaceLanguage(), "interface");
+        JComboBox<String> theme = combo(new String[]{"light", "dark"}, settings.isDark() ? "dark" : "light", "theme");
+        JComboBox<String> accentBox = combo(new String[]{"green", "blue", "purple"}, settings.getAccent(), "accent");
+        JComboBox<String> sound = combo(new String[]{"soundOn", "soundOff"}, settings.isSoundEnabled() ? "soundOn" : "soundOff", "sound");
         field(form, "interface", language); field(form, "theme", theme); field(form, "accent", accentBox);
         field(form, "sound", sound);
         // Açık JComboBox'ın olay işleyicisinde bileşen ağacını sökmek yerine yerinde güncelle.
-        language.addActionListener(e -> { settings.interfaceLanguage = (Language) language.getSelectedItem(); applySettings(); });
-        theme.addActionListener(e -> { settings.dark = "dark".equals(theme.getSelectedItem()); applySettings(); });
-        accentBox.addActionListener(e -> { settings.accent = (String) accentBox.getSelectedItem(); applySettings(); });
-        sound.addActionListener(e -> { settings.soundEnabled = "soundOn".equals(sound.getSelectedItem()); applySettings(); if (settings.soundEnabled) sounds.playSelection(); });
+        language.addActionListener(e -> { settings.setInterfaceLanguage((Language) language.getSelectedItem()); applySettings(); });
+        theme.addActionListener(e -> { settings.setDark("dark".equals(theme.getSelectedItem())); applySettings(); });
+        accentBox.addActionListener(e -> { settings.setAccent((String) accentBox.getSelectedItem()); applySettings(); });
+        sound.addActionListener(e -> { settings.setSoundEnabled("soundOn".equals(sound.getSelectedItem())); applySettings(); if (settings.isSoundEnabled()) sounds.playSelection(); });
         JLabel hint = centered(t("saved"), 14, muted); hint.putClientProperty("textKey", "saved");
         gap(form, 6); form.add(hint);
         root.add(form); finishScreen();
@@ -233,7 +240,7 @@ public class WordMatchApp extends JFrame {
     }
     private void startRound() {
         stopTimers();
-        try { session = new GameSession(repository.choose(settings.difficulty, settings.knownLanguage, settings.practiceLanguage, random), settings.difficulty); }
+        try { session = controller.startRound(settings.getDifficulty(), settings.getKnownLanguage(), settings.getPracticeLanguage()); }
         catch (IllegalStateException | IllegalArgumentException e) { JOptionPane.showMessageDialog(this, t("dataError"), t("error"), JOptionPane.ERROR_MESSAGE); showSetup(); return; }
         selectedLeft = null; selectedRight = null; cards.clear();
         newScreen(); header("", this::showMenu);
@@ -243,11 +250,11 @@ public class WordMatchApp extends JFrame {
         scoreLabel = centered("", 27, foreground); timeLabel = centered("", 27, foreground); progressLabel = centered("", 27, foreground);
         stats.add(statBox(t("score"), scoreLabel)); stats.add(statBox(t("time"), timeLabel)); stats.add(statBox(t("progress"), progressLabel));
         addWideUnlimited(dashboard, stats, 85); gap(dashboard, 14);
-        progressBar = new JProgressBar(0, session.words.size());
+        progressBar = new JProgressBar(0, session.words().size());
         progressBar.setForeground(accent); progressBar.setBackground(border); progressBar.setBorderPainted(false);
         addWideUnlimited(dashboard, progressBar, 8); gap(dashboard, 16);
         JPanel languages = panel(new GridLayout(1, 2, 28, 0));
-        languages.add(centered(settings.knownLanguage.nativeName, 18, muted)); languages.add(centered(settings.practiceLanguage.nativeName, 18, muted));
+        languages.add(centered(settings.getKnownLanguage().nativeName, 18, muted)); languages.add(centered(settings.getPracticeLanguage().nativeName, 18, muted));
         addWideUnlimited(dashboard, languages, 28); game.add(dashboard, BorderLayout.NORTH);
         JPanel columns = panel(new GridLayout(1, 2, 28, 0));
         columns.add(wordColumn(true)); columns.add(wordColumn(false)); game.add(columns, BorderLayout.CENTER);
@@ -267,14 +274,14 @@ public class WordMatchApp extends JFrame {
         box.add(centered(title, 12, muted)); gap(box, 4); box.add(value); return box;
     }
     private JPanel wordColumn(boolean left) {
-        JPanel column = panel(new GridLayout(session.words.size(), 1, 0, 9));
-        List<WordRepository.Word> shuffled = new ArrayList<>(session.words); Collections.shuffle(shuffled, random);
-        for (WordRepository.Word word : shuffled) { WordCard card = new WordCard(word, left); cards.add(card); column.add(card); }
+        JPanel column = panel(new GridLayout(session.words().size(), 1, 0, 9));
+        List<Word> shuffled = controller.column(session, left ? settings.getKnownLanguage() : settings.getPracticeLanguage());
+        for (Word word : shuffled) { WordCard card = new WordCard(word, left); cards.add(card); column.add(card); }
         return column;
     }
     private void select(WordCard card) {
         if (session.finished() || session.feedbackPending() || session.isMatched(card.word.id())) return;
-        if (settings.soundEnabled) sounds.playSelection();
+        if (settings.isSoundEnabled()) sounds.playSelection();
         if (card.left) { if (selectedLeft != null) selectedLeft.reset(); selectedLeft = card; }
         else { if (selectedRight != null) selectedRight.reset(); selectedRight = card; }
         card.state = 1; card.repaint();
@@ -287,7 +294,7 @@ public class WordMatchApp extends JFrame {
         if (correct) { a.setEnabled(false); b.setEnabled(false); }
         a.repaint(); b.repaint(); updateStats();
         statusLabel.setText(t(correct ? "correct" : "wrong", correct ? GameRules.CORRECT_POINTS : GameRules.WRONG_POINTS));
-        statusLabel.setForeground(new Color(correct ? (settings.dark ? 0x65D89A : 0x20834B) : (settings.dark ? 0xFF9191 : 0xBE3030)));
+        statusLabel.setForeground(new Color(correct ? (settings.isDark() ? 0x65D89A : 0x20834B) : (settings.isDark() ? 0xFF9191 : 0xBE3030)));
         if (session.finished()) countdown.stop();
         feedbackTimer = new javax.swing.Timer(GameRules.FEEDBACK_MILLISECONDS, e -> {
             if (!correct) { a.reset(); b.reset(); }
@@ -300,8 +307,8 @@ public class WordMatchApp extends JFrame {
     private void updateStats() {
         scoreLabel.setText(Integer.toString(session.score()));
         timeLabel.setText(String.format(Locale.ROOT, "%02d:%02d", session.secondsRemaining() / 60, session.secondsRemaining() % 60));
-        timeLabel.setForeground(session.secondsRemaining() <= 10 ? new Color(settings.dark ? 0xFF9191 : 0xBE3030) : foreground);
-        progressLabel.setText(session.correct() + " / " + session.words.size()); progressBar.setValue(session.correct());
+        timeLabel.setForeground(session.secondsRemaining() <= 10 ? new Color(settings.isDark() ? 0xFF9191 : 0xBE3030) : foreground);
+        progressLabel.setText(session.correct() + " / " + session.words().size()); progressBar.setValue(session.correct());
     }
     private void stopTimers() {
         if (countdown != null) countdown.stop();
@@ -315,7 +322,7 @@ public class WordMatchApp extends JFrame {
         gap(content, 24); content.add(centered(Integer.toString(session.score()), 72, accent));
         content.add(centered(t("totalScore"), 17, muted)); gap(content, 26);
         JPanel stats = panel(new GridLayout(1, 2, 18, 0));
-        stats.add(statBox(t("correctCount"), centered(session.correct() + " / " + session.words.size(), 28, foreground)));
+        stats.add(statBox(t("correctCount"), centered(session.correct() + " / " + session.words().size(), 28, foreground)));
         stats.add(statBox(t("wrongCount"), centered(Integer.toString(session.mistakes()), 28, foreground)));
         addWide(content, stats, 100); gap(content, 30);
         addWide(content, button(t("again"), "again", this::startRound, true), 58); gap(content, 12);
@@ -347,18 +354,18 @@ public class WordMatchApp extends JFrame {
         return new Color((int)(a.getRed()*(1-ratio)+b.getRed()*ratio), (int)(a.getGreen()*(1-ratio)+b.getGreen()*ratio), (int)(a.getBlue()*(1-ratio)+b.getBlue()*ratio));
     }
     private class WordCard extends RoundedButton {
-        final WordRepository.Word word;
+        final Word word;
         final boolean left;
         int state; // 0: normal, 1: seçili, 2: doğru, 3: yanlış
-        WordCard(WordRepository.Word word, boolean left) {
-            super(word.text(left ? settings.knownLanguage : settings.practiceLanguage), surface, foreground);
+        WordCard(Word word, boolean left) {
+            super(word.text(left ? settings.getKnownLanguage() : settings.getPracticeLanguage()), surface, foreground);
             this.word = word; this.left = left;
             setName((left ? "left-" : "right-") + word.id());
             setFont(new Font("SansSerif", Font.BOLD, 18)); addActionListener(e -> select(this));
         }
         void reset() { state = 0; repaint(); }
         @Override protected void paintComponent(Graphics graphics) {
-            fill = switch (state) { case 1 -> blend(surface, accent, .22f); case 2 -> new Color(settings.dark ? 0x204F38 : 0xDBF5E5); case 3 -> new Color(settings.dark ? 0x653239 : 0xFFE1E1); default -> surface; };
+            fill = switch (state) { case 1 -> blend(surface, accent, .22f); case 2 -> new Color(settings.isDark() ? 0x204F38 : 0xDBF5E5); case 3 -> new Color(settings.isDark() ? 0x653239 : 0xFFE1E1); default -> surface; };
             // Tamamlanan kartın yazısı disabled Swing renginden bağımsız okunaklı kalır.
             Graphics2D g = (Graphics2D) graphics.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

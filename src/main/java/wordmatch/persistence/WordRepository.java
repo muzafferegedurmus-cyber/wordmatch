@@ -1,3 +1,7 @@
+package wordmatch.persistence;
+
+import wordmatch.domain.*;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
@@ -5,9 +9,6 @@ import java.util.*;
 
 /** words.tsv: id, difficulty, category, TR, EN, IT, FR, DE (sekme ile ayrılmış). */
 public class WordRepository {
-    public record Word(String id, GameRules.Difficulty difficulty, String category, List<String> translations) {
-        public String text(Language language) { return translations.get(language.ordinal()); }
-    }
     private final List<Word> words = new ArrayList<>();
     public WordRepository() throws IOException {
         InputStream stream = WordRepository.class.getResourceAsStream("/data/words.tsv");
@@ -31,9 +32,10 @@ public class WordRepository {
         }
     }
     public long count(GameRules.Difficulty difficulty) { return words.stream().filter(w -> w.difficulty() == difficulty).count(); }
+    public List<Word> allWords() { return List.copyOf(words); }
     private String normalized(String word) { return Normalizer.normalize(word.strip(), Normalizer.Form.NFKC).toLowerCase(Locale.ROOT); }
     public List<Word> choose(GameRules.Difficulty difficulty, Language left, Language right, Random random) {
-        if (left == right) throw new IllegalArgumentException("Choose two different languages.");
+        if (left == null || right == null || difficulty == null || left == right) throw new InvalidGameException("Choose two different languages and a difficulty.");
         List<Word> pool = new ArrayList<>(words.stream().filter(w -> w.difficulty() == difficulty).toList());
         Collections.shuffle(pool, random);
         Set<String> usedLeft = new HashSet<>(), usedRight = new HashSet<>();
@@ -44,6 +46,6 @@ public class WordRepository {
             usedLeft.add(a); usedRight.add(b); chosen.add(word);
             if (chosen.size() == difficulty.pairs) return List.copyOf(chosen);
         }
-        throw new IllegalStateException("Insufficient unambiguous words for " + difficulty);
+        throw new InvalidGameException("Insufficient unambiguous words for " + difficulty);
     }
 }

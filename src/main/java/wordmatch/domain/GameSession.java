@@ -1,16 +1,25 @@
+package wordmatch.domain;
+
+
 import java.util.*;
 
 /** Swing'den bağımsız oyun durumu. Bir deneme geri bildirimi bitene kadar kilitlenir. */
 public class GameSession {
     public enum Attempt { CORRECT, WRONG, IGNORED }
     public enum EndReason { COMPLETED, TIME_UP, ABANDONED }
-    public final List<WordRepository.Word> words;
-    public final GameRules.Difficulty difficulty;
+    private final List<Word> words;
+    private final GameRules.Difficulty difficulty;
     private final Set<String> ids = new HashSet<>(), matched = new HashSet<>();
     private int score, mistakes, secondsRemaining;
     private boolean feedbackPending;
     private EndReason endReason;
-    public GameSession(List<WordRepository.Word> words, GameRules.Difficulty difficulty) {
+    public GameSession(List<Word> words, GameRules.Difficulty difficulty) {
+        if (difficulty == null || words == null || words.size() != difficulty.pairs
+                || words.stream().anyMatch(Objects::isNull)
+                || words.stream().map(Word::id).distinct().count() != words.size()
+                || words.stream().anyMatch(word -> word.difficulty() != difficulty)) {
+            throw new InvalidGameException("Tur, zorluğa uygun sayıda benzersiz kelime içermelidir.");
+        }
         this.words = List.copyOf(words);
         this.difficulty = difficulty;
         secondsRemaining = difficulty.seconds;
@@ -43,4 +52,6 @@ public class GameSession {
     public int correct() { return matched.size(); }
     public int secondsRemaining() { return secondsRemaining; }
     public EndReason endReason() { return endReason; }
+    public List<Word> words() { return words; }
+    public GameRules.Difficulty difficulty() { return difficulty; }
 }
