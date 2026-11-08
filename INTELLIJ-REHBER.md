@@ -18,6 +18,7 @@
 java -jar target/wordmatch.jar
 
 # Konsol arayüzü
+chcp 65001
 java -jar target/wordmatch.jar --console
 ```
 

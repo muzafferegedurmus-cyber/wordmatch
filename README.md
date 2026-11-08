@@ -21,6 +21,7 @@ Windows PowerShell, proje klasöründe:
 java -jar target/wordmatch.jar
 
 # PDF'de zorunlu tutulan konsol arayüzü
+chcp 65001
 java -jar target/wordmatch.jar --console
 ```
 

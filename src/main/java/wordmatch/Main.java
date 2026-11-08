@@ -11,7 +11,8 @@ public class Main {
         if (java.util.Arrays.asList(args).contains("--console")) {
             try {
                 new ConsoleApp(new java.io.InputStreamReader(System.in, java.nio.charset.StandardCharsets.UTF_8),
-                        new java.io.PrintWriter(System.out, true), new AppSettings(), new WordRepository()).run();
+                        new java.io.PrintWriter(System.out, true, java.nio.charset.StandardCharsets.UTF_8),
+                        new AppSettings(), new WordRepository()).run();
             } catch (java.io.IOException e) {
                 System.err.println("Kelime verisi yüklenemedi / Unable to load word data: " + e.getMessage());
             }
