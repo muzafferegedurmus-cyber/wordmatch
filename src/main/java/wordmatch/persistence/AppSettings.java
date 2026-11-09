@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.Properties;
 
-/** Tercihler kullanıcı klasöründeki .wordmatch/settings.properties dosyasında saklanır. */
+/** Preferences are stored in .wordmatch/settings.properties under the user home directory. */
 public class AppSettings {
     private Language interfaceLanguage = Language.TR;
     private Language knownLanguage = Language.TR;
@@ -69,7 +69,7 @@ public class AppSettings {
     public void save() throws IOException {
         save(snapshot());
     }
-    /** EDT üzerinde alınan tutarlı kopya, arka planda diske yazılır. */
+    /** A consistent snapshot is captured on the EDT and written in the background. */
     public Properties snapshot() {
         Properties p = new Properties();
         p.setProperty("interfaceLanguage", interfaceLanguage.name());

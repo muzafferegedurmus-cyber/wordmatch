@@ -4,7 +4,7 @@ import java.util.*;
 import wordmatch.domain.*;
 import wordmatch.persistence.WordRepository;
 
-/** Arayüzlerin ortak tur oluşturma servisi; seçilen sıralama stratejisini kullanır. */
+/** Shared round-creation service for both interfaces; uses the selected ordering strategy. */
 public class GameController {
     private final WordRepository repository;
     private final Random random;

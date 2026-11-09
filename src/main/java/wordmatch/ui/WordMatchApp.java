@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 
-/** Bütün ekranlar tek pencerede gösterilir. Oyun durumu GameSession içinde tutulur. */
+/** All screens share one window. GameSession holds the gameplay state. */
 public class WordMatchApp extends JFrame {
     private final AppSettings settings;
     private final SoundEffects sounds = new SoundEffects();
@@ -207,7 +207,7 @@ public class WordMatchApp extends JFrame {
         JComboBox<String> sound = combo(new String[]{"soundOn", "soundOff"}, settings.isSoundEnabled() ? "soundOn" : "soundOff", "sound");
         field(form, "interface", language); field(form, "theme", theme); field(form, "accent", accentBox);
         field(form, "sound", sound);
-        // Açık JComboBox'ın olay işleyicisinde bileşen ağacını sökmek yerine yerinde güncelle.
+        // Update in place instead of replacing the component tree from an open combo box event.
         language.addActionListener(e -> { settings.setInterfaceLanguage((Language) language.getSelectedItem()); applySettings(); });
         theme.addActionListener(e -> { settings.setDark("dark".equals(theme.getSelectedItem())); applySettings(); });
         accentBox.addActionListener(e -> { settings.setAccent((String) accentBox.getSelectedItem()); applySettings(); });
@@ -233,7 +233,7 @@ public class WordMatchApp extends JFrame {
                 if ("menu".equals(button.getName())) button.setText(t("menu"));
             } else if (component instanceof JComboBox<?> box) {
                 box.setBackground(surface); box.setForeground(foreground); box.repaint();
-                continue; // ComboBox'ın kendi alt bileşenlerini ve popup yaşam döngüsünü koru.
+                continue; // Preserve the combo box internal components and popup lifecycle.
             }
             if (component instanceof Container nested) refreshSettingsComponents(nested);
         }
@@ -356,7 +356,7 @@ public class WordMatchApp extends JFrame {
     private class WordCard extends RoundedButton {
         final Word word;
         final boolean left;
-        int state; // 0: normal, 1: seçili, 2: doğru, 3: yanlış
+        int state; // 0: normal, 1: selected, 2: correct, 3: incorrect
         WordCard(Word word, boolean left) {
             super(word.text(left ? settings.getKnownLanguage() : settings.getPracticeLanguage()), surface, foreground);
             this.word = word; this.left = left;
@@ -366,7 +366,7 @@ public class WordMatchApp extends JFrame {
         void reset() { state = 0; repaint(); }
         @Override protected void paintComponent(Graphics graphics) {
             fill = switch (state) { case 1 -> blend(surface, accent, .22f); case 2 -> new Color(settings.isDark() ? 0x204F38 : 0xDBF5E5); case 3 -> new Color(settings.isDark() ? 0x653239 : 0xFFE1E1); default -> surface; };
-            // Tamamlanan kartın yazısı disabled Swing renginden bağımsız okunaklı kalır.
+            // Keep completed card text readable regardless of the Swing disabled-text color.
             Graphics2D g = (Graphics2D) graphics.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setColor(fill); g.fillRoundRect(2, 2, getWidth()-5, getHeight()-5, 20, 20);

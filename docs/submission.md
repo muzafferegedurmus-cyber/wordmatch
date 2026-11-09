@@ -1,13 +1,13 @@
-# Sonraya bırakılan teslim adımları
+# Remaining submission steps
 
-Kullanıcı GitHub/GitLab hesabı, depo ve hoca bilgilerini daha sonra vereceğini belirtti. Bu nedenle henüz hiçbir uzak depo açılmadı, davet gönderilmedi veya teslim yapılmadı.
+The private [WordMatch repository](https://github.com/muzafferegedurmus-cyber/wordmatch) and [hosted issues](https://github.com/muzafferegedurmus-cyber/wordmatch/issues) are available. The instructor's account/access instructions are still being located. No instructor invitation or final submission has been completed.
 
-1. Kullanıcının seçtiği hesapta depo aç; yerel kod geçmişini koruyarak yükle.
-2. Hocanın kullanıcı adını/erişim şeklini öğren; doğru depoya erişimini doğrula.
-3. Yerel backlog maddelerini gerçek issue kayıtlarına aktar. Uyarlama geçmişi bugün yapılan çalışma olarak kaydedilir; geliştirme öncesi paylaşım gerçekleşmiş gibi yazılmaz.
-4. Bundan sonraki değişiklikleri feature branch üzerinde geliştir; gerçek pull/merge request ile gözden geçir ve main'e birleştir.
-5. Temiz checkout üzerinde `mvnw clean verify` ve belgelenen çalıştırma örneklerini doğrula.
-6. Öğrenci kodları ve UML'yi incelesin; dersin yapay zekâ politikası ayrıca doğrulansın.
-7. Gerçek nihai commit'e `v1.0.0` etiketi koy, release notlarını yayımla ve depo URL'sini hocaya teslim et.
+1. Verify the uploaded source and original local history in the private repository.
+2. Obtain the instructor's exact username or access instructions, grant the intended access and verify it. A display name alone does not reliably identify an account.
+3. Maintain the real hosted backlog. The translation issue explicitly records that it was opened after the local work was prepared; do not imply pre-development tracking.
+4. Use a feature branch and a real pull/merge request for subsequent changes, review the diff and merge into main.
+5. Verify a clean checkout with `mvnw clean verify` and the documented launch commands.
+6. Review the source and UML with the student and confirm the course's AI-use policy.
+7. Tag the actual final commit (for example `v1.0.0`), publish release notes and submit the repository URL according to the course instructions.
 
-Ödevde belirtilen son tarih: 29 Kasım 2026. Geliştirme öncesi paylaşım koşulu önceden yerine getirilmediyse bunu teknik değişiklikle geriye dönük düzeltemeyiz.
+Assignment deadline: **29 November 2026**. The requirement to share the repository before development cannot be satisfied retrospectively by modifying code or creating backdated history. Discuss the actual timeline with the instructor.

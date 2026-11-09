@@ -5,7 +5,7 @@ import wordmatch.domain.Language;
 import java.text.MessageFormat;
 import java.util.*;
 
-/** Sütun sırası: Türkçe, İngilizce, İtalyanca, Fransızca, Almanca. */
+/** Translation order: Turkish, English, Italian, French, German. */
 public final class I18n {
     private I18n() {}
     private static final Map<String, String[]> TEXT = new HashMap<>();
@@ -71,7 +71,7 @@ public final class I18n {
     private static void add(String key, String... translations) { TEXT.put(key, translations); }
     public static String text(Language language, String key, Object... arguments) {
         String value = TEXT.get(key)[language.ordinal()];
-        // MessageFormat apostrof kaçışları doğal dil metnine uygulanır.
+        // Escape natural-language apostrophes for MessageFormat.
         return arguments.length == 0 ? value : MessageFormat.format(value.replace("'", "''"), arguments);
     }
 }

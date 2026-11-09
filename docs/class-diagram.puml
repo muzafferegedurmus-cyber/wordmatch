@@ -6,7 +6,7 @@ skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam defaultFontName SansSerif
 skinparam linetype ortho
-title WordMatch - Sınıflar ve ilişkiler
+title WordMatch - Classes and relationships
 package wordmatch {
  class Main {
   +{static} main(args : String[]) : void
@@ -141,13 +141,13 @@ Main ..> WordMatchApp : default
 Main ..> ConsoleApp : --console
 GameController ..> InvalidGameException : validates
 note bottom of WordOrder
-Strategy: istemci yalnızca WordOrder sözleşmesini bilir.
-Konsolda seçilen politika çalışma zamanında değişir.
-Swing varsayılanı: ShuffledWordOrder.
+Strategy: the client depends on the WordOrder contract.
+The console selects the ordering policy at runtime.
+Swing default: ShuffledWordOrder.
 end note
 legend bottom
   + public    - private    ..|> interface realization
-  *-- composition    o-- aggregation    --> association
-  Diyagram açıklık için yardımcı metotları ve iç Swing kart sınıflarını özetler.
+  Filled diamond: composition    Open diamond: aggregation    Arrow: association
+  Helper methods and internal Swing card classes are omitted for clarity.
 endlegend
 @enduml

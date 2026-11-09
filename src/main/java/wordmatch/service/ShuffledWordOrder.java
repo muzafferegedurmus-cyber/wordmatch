@@ -3,7 +3,7 @@ package wordmatch.service;
 import java.util.*;
 import wordmatch.domain.*;
 
-/** Standart oyun: her sütun bağımsız karıştırılır. */
+/** Standard play: shuffle each column independently. */
 public class ShuffledWordOrder implements WordOrder {
     @Override public List<Word> arrange(List<Word> words, Language language, Random random) {
         List<Word> result = new ArrayList<>(words);

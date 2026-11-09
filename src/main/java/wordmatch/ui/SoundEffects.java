@@ -5,7 +5,7 @@ import javax.sound.sampled.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/** İnternetsiz, düşük sesli ve yumuşak bir kart seçme tonu. Ses işlemleri EDT'yi bekletmez. */
+/** Offline, quiet selection tone. Audio work does not block the EDT. */
 public final class SoundEffects implements AutoCloseable {
     private final ExecutorService audio = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "wordmatch-audio"); thread.setDaemon(true); return thread;
@@ -35,7 +35,7 @@ public final class SoundEffects implements AutoCloseable {
         for (int i = 0; i < count; i++) {
             double time = i / 44100.0;
             double remaining = (count - 1 - i) / 44100.0;
-            // Yumuşak giriş/çıkış ve hafif alçalan saf ton: keskin üst harmonik yok.
+            // Soft attack/release and a gently descending sine tone without sharp upper harmonics.
             double attack = Math.sin(Math.PI * .5 * Math.min(1, time / .025));
             double release = Math.sin(Math.PI * .5 * Math.min(1, remaining / .060));
             double envelope = attack * attack * Math.exp(-15 * time) * release * release;
@@ -50,7 +50,7 @@ public final class SoundEffects implements AutoCloseable {
         audio.execute(() -> {
             try {
                 if (selection != null && !closed) {
-                    // Hızlı tıklamalar sürmekte olan sesi kesip çıtırtı oluşturmasın.
+                    // Do not interrupt a playing tone on rapid clicks, which could create a click artifact.
                     if (selection.isRunning()) return;
                     selection.stop(); selection.setFramePosition(0); selection.start();
                 }

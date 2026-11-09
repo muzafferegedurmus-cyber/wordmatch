@@ -1,7 +1,7 @@
 package wordmatch.domain;
 
 
-/** Oyunun değiştirilebilir kuralları. */
+/** Central gameplay constants and difficulty settings. */
 public final class GameRules {
     private GameRules() {}
     public static final int CORRECT_POINTS = 10;

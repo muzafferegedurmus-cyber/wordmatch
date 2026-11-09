@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.*;
 
-/** words.tsv: id, difficulty, category, TR, EN, IT, FR, DE (sekme ile ayrılmış). */
+/** words.tsv: id, difficulty, category, TR, EN, IT, FR, DE (tab-separated). */
 public class WordRepository {
     private final List<Word> words = new ArrayList<>();
     public WordRepository() throws IOException {
