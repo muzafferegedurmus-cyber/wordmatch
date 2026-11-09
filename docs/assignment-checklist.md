@@ -20,10 +20,10 @@ Source: Prog2Homework_project_assignment.pdf, five pages. Technical implementati
 | License / 4 | Student-selected MIT license; Maven Wrapper retains its own notices. |
 | JUnit / 3 and 5 | Tests under src/test/java; mvnw clean verify. Earlier pages say optional, but page 5 requires JUnit; the stricter requirement is implemented. |
 | Exclude IDE output and secrets / 3 | .gitignore excludes target, build, .idea, .vscode, local settings and the separate web project. Packaged words.tsv is application content, not private runtime data. |
-| Online repository and instructor access / 1,3,5 | Pending repository setup and the instructor's account/access instructions. |
+| Online repository and instructor access / 1,3,5 | [Private repository](https://github.com/muzafferegedurmus-cyber/wordmatch) created; instructor account/access instructions and access verification are pending. |
 | Share before development / 3 | Not established retrospectively: development already occurred. This must be disclosed to the instructor. |
-| Issue backlog / 3,5 | backlog.md is a local draft; actual hosted issue records are pending. |
-| Meaningful commits and branch/PR/MR process / 3,5 | Real local adaptation history exists. Hosted PR/MR review is pending; local notes do not replace it. |
+| Issue backlog / 3,5 | [Hosted issues](https://github.com/muzafferegedurmus-cyber/wordmatch/issues) now track translation, instructor access and final delivery; backlog.md links to them. |
+| Meaningful commits and branch/PR/MR process / 3,5 | The original local history is uploaded. The English documentation branch is prepared for a hosted pull request; final delivery will verify the merge evidence. |
 | Final tag and release / 3–5 | Pending final review and access verification. release-notes.md is a draft. |
 
 The complete submission cannot be declared finished until repository access and the required hosted workflow/release steps are verified.

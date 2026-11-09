@@ -1,6 +1,6 @@
 # Draft final release notes
 
-**No final release or final tag has been published.** Review this draft once repository setup, instructor access and final checks are complete.
+**No final release or final tag has been published.** Review this draft once instructor access and final checks are complete.
 
 ## Implemented features
 
@@ -12,4 +12,4 @@
 
 ## Limitations and pending delivery
 
-There is no score history. Initial Maven downloads require internet access. Console mode does not use themes or sound. Translation meaning requires human review. The iPad web version is separate from this Java submission. Repository access, hosted issue/PR/MR evidence and the final tag/release are still pending.
+There is no score history. Initial Maven downloads require internet access. Console mode does not use themes or sound. Translation meaning requires human review. The iPad web version is separate from this Java submission. The private repository and hosted backlog are available. Instructor access and the final tag/release remain pending; the English documentation branch is being reviewed through a pull request.

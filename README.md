@@ -6,7 +6,7 @@
 
 **License:** MIT ([LICENSE](LICENSE))
 
-**Submission status:** The local implementation and documentation are available. An online repository, instructor access, hosted issue/PR history and a final tagged release are still pending.
+**Submission status:** The implementation and English documentation are available. The private [GitHub repository](https://github.com/muzafferegedurmus-cyber/wordmatch) and [hosted backlog](https://github.com/muzafferegedurmus-cyber/wordmatch/issues) are set up. Instructor access and the final tagged release are still pending.
 
 WordMatch helps language learners practise vocabulary by matching words in a familiar language with their equivalents in another language. It provides short timed rounds, immediate feedback and persistent preferences. The vocabulary contains 75 concepts, with 25 at each difficulty level, translated into Turkish, English, Italian, French and German. All 20 ordered pairs of different languages are supported.
 
@@ -97,7 +97,7 @@ It checks immediate theme/language updates, responsiveness during delayed disk w
 
 The assignment deadline is **29 November 2026**. Although earlier pages describe testing as optional, the final submission checklist requires JUnit, so JUnit tests are included.
 
-Online repository setup, instructor access, actual hosted issues/PRs and the final tag/release remain pending. Local history records the original game and the subsequent adaptation. It does not establish that the repository was shared before development began. That timing requirement cannot be satisfied retrospectively and must be discussed with the instructor. See [submission preparation](docs/submission.md).
+The private repository and hosted issues are available. English documentation changes are developed on `docs/english-submission` for pull-request review. Instructor access and the final tag/release remain pending. Local history records the original game and the subsequent adaptation. It does not establish that the repository was shared before development began. That timing requirement cannot be satisfied retrospectively and must be discussed with the instructor. See [submission preparation](docs/submission.md).
 
 Only preferences are persisted; there is no score history or database. Vocabulary meaning requires human review. Concurrent instances writing the same preference file use last-writer-wins behavior. Audio falls back to silence when no device is available. The earlier iPad web version is a separate project and is not part of this Java submission.
 
