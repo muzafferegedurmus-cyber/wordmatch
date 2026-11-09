@@ -4,7 +4,7 @@ import java.text.Collator;
 import java.util.*;
 import wordmatch.domain.*;
 
-/** Konsoldaki isteğe bağlı çalışma sırası: her sütun kendi diline göre sıralanır. */
+/** Optional console study order: sort each column using its own language. */
 public class AlphabeticalWordOrder implements WordOrder {
     @Override public List<Word> arrange(List<Word> words, Language language, Random random) {
         Collator collator = Collator.getInstance(Locale.forLanguageTag(language.name().toLowerCase(Locale.ROOT)));

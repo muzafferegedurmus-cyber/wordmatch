@@ -1,15 +1,15 @@
-# Nihai sürüm için release notu taslağı
+# Draft final release notes
 
-**Henüz final release veya final tag oluşturulmadı.** Depo ve öğretmen erişimi tamamlandıktan sonra bu metin gözden geçirilecek.
+**No final release or final tag has been published.** Review this draft once repository setup, instructor access and final checks are complete.
 
-## Tamamlanan uygulama özellikleri
+## Implemented features
 
-- Mevcut WordMatch Swing menüsü, oyun, ayarlar ve sonuç ekranı.
-- Beş dil, 75 kelime, üç zorluk; doğru +10, yanlış −5.
-- Ses, açık/koyu tema, vurgu rengi ve kalıcı tercihler.
-- Aynı modeli kullanan konsol arayüzü ve alfabetik/rastgele sıralama stratejileri.
-- Java 21 Maven yapısı, JUnit testleri, UML ve açıklama belgeleri.
+- Swing main menu, setup, game, preferences and results screens.
+- Five languages, 75 vocabulary concepts and three difficulty levels; +10 for correct matches and -5 for wrong attempts.
+- Soft selection audio, light/dark themes, accent colors and persistent preferences.
+- Console interface sharing the same model, with random and alphabetical ordering strategies.
+- Java 21 Maven build, JUnit tests, UML and English evaluation documentation.
 
-## Sınırlar
+## Limitations and pending delivery
 
-Puan geçmişi kaydedilmez; ilk Maven indirmeleri internet gerektirir. Konsolda tema ve ses kullanılmaz. Kelime anlamları manuel kontrol gerektirir. iPad web sürümü bu Java tesliminden ayrıdır. Depo erişimi, gerçek issue/PR/MR ve final tag/release henüz bekleyen adımlardır.
+There is no score history. Initial Maven downloads require internet access. Console mode does not use themes or sound. Translation meaning requires human review. The iPad web version is separate from this Java submission. Repository access, hosted issue/PR/MR evidence and the final tag/release are still pending.

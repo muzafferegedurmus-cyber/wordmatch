@@ -1,5 +1,5 @@
 @echo off
-rem Yalnizca bu komut oturumunu ayarlar; Windows'un kalici ayarlarini degistirmez.
+rem Configure this command session only; do not change persistent Windows settings.
 if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javac.exe" exit /b 0
 set "JAVA_HOME="
 for /f "tokens=2 delims==" %%J in ('java -XshowSettings:properties -version 2^>^&1 ^| findstr /C:"java.home ="') do set "JAVA_HOME=%%J"

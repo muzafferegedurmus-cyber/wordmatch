@@ -3,7 +3,7 @@ package wordmatch.domain;
 
 import java.util.*;
 
-/** Swing'den bağımsız oyun durumu. Bir deneme geri bildirimi bitene kadar kilitlenir. */
+/** UI-independent round state. Attempts are locked until feedback finishes. */
 public class GameSession {
     public enum Attempt { CORRECT, WRONG, IGNORED }
     public enum EndReason { COMPLETED, TIME_UP, ABANDONED }

@@ -2,7 +2,7 @@ package wordmatch.domain;
 
 import java.util.List;
 
-/** Değiştirilemeyen bir kelime; beş çeviri aynı kavramı temsil eder. */
+/** Immutable vocabulary value; all five translations represent the same concept. */
 public record Word(String id, GameRules.Difficulty difficulty, String category, List<String> translations) {
     public Word {
         if (id == null || id.isBlank() || difficulty == null || category == null || category.isBlank()) {

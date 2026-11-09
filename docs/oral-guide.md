@@ -1,64 +1,60 @@
-# Hocaya kodu anlatma rehberi
+# Explaining the code
 
-Bu bir ezber metni değil; her örneği IntelliJ'de bulup bir kez kendin takip et. Her satırda: hangi bilgiyi alıyor, ne yapıyor, sonucu ne?
+Use each example alongside the actual source in IntelliJ. For any statement, ask: what information does it take, what does it change, and what result does the user see?
 
-## Program nereden başlıyor?
+## Entry point
 
-`Main.main` Java'nın giriş noktasıdır. Argümanlarda `--console` varsa `ConsoleApp.run()` çağrılır. Yoksa `SwingUtilities.invokeLater` ile pencere Swing'in arayüz iş parçacığında oluşturulur. `new WordMatchApp()` nesneyi kurar; `setVisible(true)` görünür yapar.
+`Main.main` starts the application. With `--console`, it runs `ConsoleApp.run()`. Otherwise, `SwingUtilities.invokeLater` creates the window on Swing's event dispatch thread (EDT). `new WordMatchApp()` constructs it; `setVisible(true)` displays it.
 
-## Kurallar ve tur neden ayrı?
+## Rules versus session state
 
-`GameRules.CORRECT_POINTS` bir doğru eşleşmenin kaç puan olduğunu belirtir. `GameSession.score` ise o anda oynanan turun puanıdır. `score += GameRules.CORRECT_POINTS` ifadesi, mevcut puana kuraldaki sayıyı ekler. Kurallar sabit, tur durumu değişkendir.
+`GameRules.CORRECT_POINTS` defines the reward for a match. `GameSession.score` holds the current round's score. `score += GameRules.CORRECT_POINTS` adds the rule's value to the current state.
 
-## private, public, static, final
+## Access and modifiers
 
-- `private int score`: başka sınıflar bu alanı doğrudan değiştiremez. `attempt` üzerinden kurala uygun değişir.
-- `public int score()`: dışarıya yalnızca mevcut değeri okuma imkânı verir.
-- `static`: üyeyi belirli bir nesneye değil sınıfa bağlar; örneğin puan sabiti.
-- `final`: alanın referansı/değeri bir kez atandıktan sonra tekrar atanamaz. Bir listeyi tek başına değiştirilemez yapmaz; bu yüzden `List.copyOf` kullanılır.
+- `private int score`: other classes cannot change the field directly; `attempt` applies the rules.
+- `public int score()`: exposes the value for reading.
+- `static`: belongs to the class rather than one instance.
+- `final`: prevents reassignment. It does not make a referenced list's contents immutable; defensive `List.copyOf` copies provide that protection here.
 
-## constructor ve this
+## Constructors, records and enums
 
-`GameSession(...)` bir tur nesnesi oluşturulurken çalışır. Kelime sayısı/kimlikleri/zorluk geçerli mi kontrol eder. `this.difficulty = difficulty` satırında sol taraf nesnenin alanı, sağ taraf metoda gelen parametredir. `secondsRemaining = difficulty.seconds` seçilen seviyenin süresini başlangıç değeri yapar.
+The `GameSession` constructor validates count, IDs and difficulty before accepting the words. In `this.difficulty = difficulty`, the left side is the field and the right side is the parameter. The initial time comes from `difficulty.seconds`.
 
-## record ve enum
+`Word` is a record holding an ID, difficulty, category and translations. Its compact constructor validates data and copies the list. Java supplies accessors and value operations. `Language` and `Difficulty` enums constrain choices to known values.
 
-`Word` bir Java record'udur: kimlik, kategori ve çeviriler gibi verileri taşır; alanları final'dır, okuma metotlarını Java üretir. Eklediğimiz kurucu doğrulaması eksik/boş kelimeyi reddeder. `Language` ve `Difficulty` enum'ları yalnızca tanımlanmış seçenekleri kabul eder.
+## Match processing
 
-## Bir eşleşme nasıl kontrol ediliyor?
+1. The interface sends the two concept IDs to `attempt`.
+2. Finished rounds, pending feedback, invalid IDs or previously matched cards return `IGNORED`.
+3. Matching IDs, compared with `equals`, identify translations of the same concept.
+4. A correct ID enters the `matched` set and earns 10 points. Matching every word sets `COMPLETED`.
+5. A wrong attempt adds -5 points and increments mistakes. `finishFeedback` releases the temporary lock.
 
-1. Arayüz sol ve sağ kelimenin kimliğini `attempt` metoduna verir.
-2. Tur bitmişse, geri bildirim sürüyorsa veya kart zaten eşleşmişse `IGNORED` döner.
-3. Kimlikler `equals` ile aynıysa doğru eşleşmedir. Metin çevirilerini birbirine eşitlemeyiz; aynı kavramın kimliğini karşılaştırırız.
-4. Doğru kimlik `matched` kümesine eklenir ve +10 puan verilir. Tüm kelimeler bittiyse `COMPLETED` olur.
-5. Yanlışsa −5 puan ve bir yanlış deneme eklenir. `finishFeedback` kilidi kaldırır.
+## Collections
 
-## List ve Set neden var?
+`List<Word>` preserves ordering and restricts elements to Word values. `Set<String>` keeps unique matched IDs. `ArrayList` and `HashSet` are concrete implementations of those interfaces. `Map<String, String[]>` connects localization keys to translations.
 
-`List<Word>` sıralı kelimeleri tutar; `<Word>` yalnızca Word nesneleriyle çalıştığımızı söyler. `Set<String>` aynı kimliği iki kez tutmaz; eşleşen kartları tekrar saymamak için uygundur. `HashSet` bir Set uygulamasıdır. `ArrayList` bir List uygulamasıdır.
+## Interface, overriding and runtime polymorphism
 
-## interface, implements, Override, polimorfizm
+`WordOrder` declares the `arrange` contract. Each `implements WordOrder` class overrides it. With `WordOrder policy = new AlphabeticalWordOrder()`, the declared type is the interface while the runtime object is the alphabetical strategy. Calling `arrange` invokes that object's implementation. A different concrete strategy changes behavior behind the same call. Show `GameController.column` and the selection in `ConsoleApp` to demonstrate actual use.
 
-`WordOrder` arayüzü “arrange metodunu sunmalısın” sözleşmesidir. `ShuffledWordOrder implements WordOrder`, bu sözleşmeyi uyguladığını söyler. `@Override`, arayüzdeki metodu burada gerçekleştirdiğimizi derleyiciye belirtir.
+## Sorting and lambdas
 
-`WordOrder policy = new AlphabeticalWordOrder()` satırında değişkenin tipi arayüz, gerçek nesnenin tipi alfabetik stratejidir. `policy.arrange(...)` çağrısında nesnenin kendi gövdesi çalışır. Başka somut nesne atarsak aynı çağrı farklı davranır. Bu **çalışma zamanı polimorfizmi** ve **Strategy** deseninin merkezidir. Sadece aynı isimli iki metot yazmak polimorfizm kanıtı değildir; ortak tip üzerinden çağrıyı göster.
+`Comparator.comparing(word -> word.text(language), collator)` selects the translated word as the sort key and uses the chosen language's `Collator`. `result.sort(...)` applies the comparison. The lambda extracts the relevant text; it does not itself start a background thread.
 
-## Sıralama ve lambda
+## Exceptions
 
-`Comparator.comparing(word -> word.text(language), collator)` sıralamanın ölçütünü tanımlar. Lambda “bu kelimeden seçilen dildeki metni çıkar” der. `Collator`, o dilin alfabetik karşılaştırmasını yapar. `result.sort(...)` listeyi bu karşılaştırıcıyla sıralar.
+`InvalidGameException` extends `IllegalArgumentException` and is a custom unchecked exception for invalid game input. The console catches it and reports invalid input. `IOException` describes file/stream failures rather than a game-rule violation.
 
-## Hata yönetimi
+## Persistence and resources
 
-`throw new InvalidGameException(...)` geçersiz oyun girdisini bildirir. Bu, Java'nın `IllegalArgumentException` sınıfından türetilmiş özel unchecked exception'dır. Konsol bunu yakalayıp kullanıcıdan yeni giriş ister. `IOException` dosya/okuma/yazma hatalarını ifade eder; oyun alan hatasından farklıdır.
+`WordRepository` reads the bundled TSV resource. `AppSettings` loads/saves a Properties file. A `try (Reader reader = ...)` block closes its reader even after an exception. Saving through a temporary file reduces the risk of leaving a partially written main preference file.
 
-## Kalıcılık ve try-with-resources
+## Responsiveness
 
-`WordRepository` paket içindeki TSV dosyasını okur. `AppSettings` kullanıcı tercihlerinin Properties dosyasını yazar/yükler. `try (Reader reader = ...)` bloğu bittiğinde Reader'ı hata olsa da kapatır. Kaydın önce geçici dosyaya yazılması, yarım kalmış ana ayar dosyası riskini azaltır.
+Swing component updates happen on the EDT. Disk writes and audio run on executor threads so they do not block interaction. Preference controls are updated in place rather than rebuilding an open combo box's component tree. Errors return to the EDT through `invokeLater`. A regression test deliberately delays disk writes to check responsiveness.
 
-## Arayüz niye donmuyor?
+## Tests
 
-Swing işlemleri EDT'de yapılır. Uzun dosya veya ses işlemi EDT'yi bekletirse butonlar cevap veremez. Bu yüzden ExecutorService arka plan işçisi kullanılır; ekrana geri dönmek gerektiğinde SwingUtilities.invokeLater çağrılır. Testte disk yazımı bekletilerek menünün hâlâ çalıştığı doğrulanır.
-
-## Testi nasıl açıklarsın?
-
-JUnit'te `@Test` bir test metodunu belirtir. `assertEquals(-5, game.score())`, yanlış eşleşmeden sonra beklediğimiz puan ile gerçeği karşılaştırır. `assertThrows`, geçersiz girişin beklenen hatayı verdiğini doğrular. `@TempDir` gerçek ayarlarını bozmadan test için geçici dosya alanı sağlar.
+`@Test` identifies a JUnit test. `assertEquals(-5, game.score())` compares expected and actual results. `assertThrows` checks the expected failure, while `@TempDir` isolates test preferences from real user files. Passing tests establish the checked scenarios, not the absence of every possible defect.

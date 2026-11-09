@@ -7,7 +7,7 @@ import wordmatch.domain.*;
 import wordmatch.persistence.*;
 import wordmatch.service.*;
 
-/** Swing ile aynı GameSession modelini kullanan konsol arayüzü. */
+/** Console interface sharing the GameSession model with Swing. */
 public class ConsoleApp {
     private final PrintWriter output;
     private final AppSettings settings;
@@ -22,7 +22,7 @@ public class ConsoleApp {
         this.settings = Objects.requireNonNull(settings);
         this.repository = Objects.requireNonNull(repository);
         controller = new GameController(repository);
-        // readLine kullanıcıyı beklerken ana döngü süre bitimini kontrol edebilsin.
+        // Let the main loop check expiry while readLine waits for user input.
         Thread reader = new Thread(() -> {
             BufferedReader lines = new BufferedReader(source);
             try {
@@ -36,7 +36,7 @@ public class ConsoleApp {
     }
     private String t(String key, Object... values) { return I18n.text(settings.getInterfaceLanguage(), key, values); }
     private void say(String value) { output.println(value); output.flush(); }
-    /** EOF ve süre sonu null döndürür. Süreli bekleme, Enter gelmese de turu sonlandırır. */
+    /** Return null on EOF or expiry. Timed polling lets the round end without an Enter press. */
     private String read(long deadlineNanos) {
         try {
             while (true) {
@@ -107,7 +107,7 @@ public class ConsoleApp {
         say("1. " + t("randomOrder") + "  2. " + t("alphabeticalOrder"));
         int order = choice(1, 2);
         if (order == -1) return;
-        // Çalışma zamanında aynı sözleşmenin iki farklı uygulamasından biri seçilir.
+        // Select one of two implementations of the same contract at runtime.
         WordOrder policy = order == 1 ? new ShuffledWordOrder() : new AlphabeticalWordOrder();
         controller.setWordOrder(policy);
         settings.setKnownLanguage(known); settings.setPracticeLanguage(practice); settings.setDifficulty(difficulties[level - 1]);

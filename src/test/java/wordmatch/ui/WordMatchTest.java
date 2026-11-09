@@ -13,7 +13,7 @@ import java.nio.file.*;
 import java.util.*;
 import javax.imageio.ImageIO;
 
-/** Bağımlılık gerektirmeyen model ve gerçek Swing ekran testleri. */
+/** Standalone model and real Swing window regression checks. */
 public class WordMatchTest {
     private static int checks;
     private static void check(boolean condition, String message) {
@@ -73,7 +73,7 @@ public class WordMatchTest {
         try (SoundEffects audio = new SoundEffects()) {
             System.out.println("Audio output available: " + audio.availableForTest());
             audio.playSelection();
-            Thread.sleep(200); // Ses çıkışına gerçek bir kısa oynatma fırsatı ver.
+            Thread.sleep(200); // Allow a brief real audio playback.
         }
         check(loaded.isDark() && loaded.getAccent().equals("purple") && loaded.getInterfaceLanguage() == Language.DE, "Appearance persistence");
         check(loaded.getKnownLanguage() == Language.IT && loaded.getPracticeLanguage() == Language.FR && loaded.getDifficulty() == GameRules.Difficulty.HARD, "Round persistence");
@@ -174,7 +174,7 @@ public class WordMatchTest {
         }
     }
     private static Object field(Object target, String name) throws Exception { Field f = target.getClass().getDeclaredField(name); f.setAccessible(true); return f.get(target); }
-    // Yalnızca test diskin tamamlanmasını bekler; uygulama EDT üzerinde beklemez.
+    // Only the test waits for disk completion; the application does not wait on the EDT.
     private static void awaitSave(Object app) throws Exception { ((java.util.concurrent.Future<?>)field(app, "latestSave")).get(10, java.util.concurrent.TimeUnit.SECONDS); }
     private static Component find(Container parent, String name) {
         for (Component c : parent.getComponents()) {

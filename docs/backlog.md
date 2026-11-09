@@ -1,17 +1,18 @@
-# İş listesi — yerel takip
+# Backlog - local tracking
 
-Bu liste gerçek GitHub/GitLab issue geçmişi değildir. Depo açıldığında aşağıdaki işler issue olarak aktarılabilir. Geçmiş tarihli kayıt oluşturulmaz.
+This checklist is not a hosted GitHub/GitLab issue history. Transfer the relevant tasks into actual issues when the repository is available, without backdating records.
 
-- [x] Var olan Swing oyununu kaybetmeden standart Maven düzenine taşı.
-- [x] Ayarları kapsülle; domain nesnelerini doğrula.
-- [x] İki sıralama stratejisini ortak arayüzle kullan.
-- [x] Aynı oyun modelini kullanan konsol arayüzü ekle.
-- [x] JUnit testlerini ve mevcut Swing kontrollerini çalıştır.
-- [x] UML, kullanıcı hikâyeleri, kurulum ve sözlü anlatım belgelerini ekle.
-- [x] Kullanıcının seçtiği MIT lisansını ekle.
-- [ ] GitHub veya GitLab deposu aç ve gerçek issue kayıtları oluştur.
-- [ ] Hocanın erişim hesabını al ve erişimi doğrula.
-- [ ] Uzak feature branch / PR veya MR üzerinden inceleme ve birleştirme yap.
-- [ ] Hocaya geç paylaşılan depo durumunu ve yapay zekâ desteğini ders politikasına göre açıkla.
-- [ ] Öğrenci kodu okuyup sözlü anlatıma hazırlansın.
-- [ ] Final commit'i etiketle, release oluştur ve depo URL'sini teslim et.
+- [x] Preserve the Swing game while adopting the standard Maven layout.
+- [x] Encapsulate preferences and validate domain objects.
+- [x] Implement two ordering strategies behind a common interface.
+- [x] Add a console interface sharing the game model.
+- [x] Add JUnit tests and run the separate Swing checks.
+- [x] Add UML, user stories, setup instructions and an explanation guide.
+- [x] Add the student-selected MIT license.
+- [x] Translate instructor-facing documentation and source comments into English.
+- [ ] Create/select an online repository and record actual hosted issues.
+- [ ] Obtain the instructor's account and verify repository access.
+- [ ] Complete a hosted feature-branch PR/MR review and merge.
+- [ ] Explain the late repository-sharing timeline and AI assistance under the course policy.
+- [ ] Review the code and practise the oral explanation.
+- [ ] Tag the final commit, publish a release and submit the repository URL.

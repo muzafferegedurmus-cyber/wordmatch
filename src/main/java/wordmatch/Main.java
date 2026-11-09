@@ -5,7 +5,7 @@ import wordmatch.ui.*;
 
 import javax.swing.SwingUtilities;
 
-/** Uygulamanın başlangıç noktası. Swing bileşenleri yalnızca EDT üzerinde oluşturulur. */
+/** Application entry point. Swing components are created on the EDT. */
 public class Main {
     public static void main(String[] args) {
         if (java.util.Arrays.asList(args).contains("--console")) {
