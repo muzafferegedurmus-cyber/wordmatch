@@ -1,13 +1,9 @@
-# Remaining submission steps
+# Submission status and remaining external steps
 
-The private [WordMatch repository](https://github.com/muzafferegedurmus-cyber/wordmatch) and [hosted issues](https://github.com/muzafferegedurmus-cyber/wordmatch/issues) are available. The instructor's account/access instructions are still being located. No instructor invitation or final submission has been completed.
+The private [WordMatch repository](https://github.com/muzafferegedurmus-cyber/wordmatch), hosted issues, original commit history and merged English documentation PR are available. Version 1.0.0 is the release version; its [release record](https://github.com/muzafferegedurmus-cyber/wordmatch/releases/tag/v1.0.0) identifies publication and the exact commit. See [acceptance evidence](acceptance-checklist.md).
 
-1. Verify the uploaded source and original local history in the private repository.
-2. Obtain the instructor's exact username or access instructions, grant the intended access and verify it. A display name alone does not reliably identify an account.
-3. Maintain the real hosted backlog. The translation issue explicitly records that it was opened after the local work was prepared; do not imply pre-development tracking.
-4. Use a feature branch and a real pull/merge request for subsequent changes, review the diff and merge into main.
-5. Verify a clean checkout with `mvnw clean verify` and the documented launch commands.
-6. Review the source and UML with the student and confirm the course's AI-use policy.
-7. Tag the actual final commit (for example `v1.0.0`), publish release notes and submit the repository URL according to the course instructions.
+1. Confirm the instructor can access the private repository. A Teams URL field alone does not establish permission. Obtain the exact GitHub account or instructor-approved sharing instructions; no invitation has been sent.
+2. Review the code and UML, practise explaining them and comply with the course's AI-use policy. AI assistance is disclosed in README.
+3. Verify the release link, then submit the repository URL using the course's Teams assignment. The assistant has not submitted the assignment.
 
-Assignment deadline: **29 November 2026**. The requirement to share the repository before development cannot be satisfied retrospectively by modifying code or creating backdated history. Discuss the actual timeline with the instructor.
+Deadline: **29 November 2026**. The requirement to share before development cannot be satisfied retrospectively. Discuss the actual timeline with the instructor; the issues and history describe the real sequence of work.

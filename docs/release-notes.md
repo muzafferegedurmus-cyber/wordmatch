@@ -1,6 +1,6 @@
-# Draft final release notes
+# WordMatch 1.0.0 release notes
 
-**No final release or final tag has been published.** Review this draft once instructor access and final checks are complete.
+Release version: **1.0.0**. The GitHub release record identifies the exact tagged commit. Publication does not constitute Teams submission or confirmation of instructor access.
 
 ## Implemented features
 
@@ -12,4 +12,4 @@
 
 ## Limitations and pending delivery
 
-There is no score history. Initial Maven downloads require internet access. Console mode does not use themes or sound. Translation meaning requires human review. The iPad web version is separate from this Java submission. The private repository and hosted backlog are available. Instructor access and the final tag/release remain pending; the English documentation branch is being reviewed through a pull request.
+There is no score history. Initial Maven downloads require internet access. Console mode does not use themes or sound. Translation meaning requires human review. The iPad web version is separate from this Java submission. The private repository and hosted backlog are available. English documentation was merged through pull request 4. Instructor access and Teams submission remain pending. The pre-development repository-sharing requirement was not met retrospectively; this timing must be discussed with the instructor.

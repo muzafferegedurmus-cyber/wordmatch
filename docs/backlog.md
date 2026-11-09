@@ -16,7 +16,8 @@ This local summary complements the [hosted issue backlog](https://github.com/muz
 - [x] Translate instructor-facing documentation and source comments into English.
 - [x] Create a private repository and record actual hosted issues.
 - [ ] Obtain the instructor's account and verify repository access.
-- [ ] Complete a hosted feature-branch PR/MR review and merge.
+- [x] Complete a hosted feature-branch PR/MR review and merge (pull request 4).
 - [ ] Explain the late repository-sharing timeline and AI assistance under the course policy.
 - [ ] Review the code and practise the oral explanation.
-- [ ] Tag the final commit, publish a release and submit the repository URL.
+- Release preparation: version 1.0.0; publication evidence is the GitHub release record.
+- [ ] Submit the repository URL through Teams after confirming instructor access.
