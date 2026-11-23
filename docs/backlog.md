@@ -15,9 +15,9 @@ This local summary complements the [hosted issue backlog](https://github.com/muz
 - [x] Add the student-selected MIT license.
 - [x] Translate instructor-facing documentation and source comments into English.
 - [x] Create a private repository and record actual hosted issues.
-- [ ] Obtain the instructor's account and verify repository access.
+- [x] Make the repository public at the student's request and verify anonymous access; no instructor account is required.
 - [x] Complete a hosted feature-branch PR/MR review and merge (pull request 4).
 - [ ] Explain the late repository-sharing timeline and AI assistance under the course policy.
 - [ ] Review the code and practise the oral explanation.
-- Release preparation: version 1.0.0; publication evidence is the GitHub release record.
-- [ ] Submit the repository URL through Teams after confirming instructor access.
+- Release preparation: version 1.0.1; publication evidence is the GitHub release record.
+- [ ] Submit the public repository URL through Teams.
