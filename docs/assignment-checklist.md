@@ -20,10 +20,10 @@ Source: Prog2Homework_project_assignment.pdf, five pages. Technical implementati
 | License / 4 | Student-selected MIT license; Maven Wrapper retains its own notices. |
 | JUnit / 3 and 5 | Tests under src/test/java; mvnw clean verify. Earlier pages say optional, but page 5 requires JUnit; the stricter requirement is implemented. |
 | Exclude IDE output and secrets / 3 | .gitignore excludes target, build, .idea, .vscode, local settings and the separate web project. Packaged words.tsv is application content, not private runtime data. |
-| Online repository and instructor access / 1,3,5 | [Private repository](https://github.com/muzafferegedurmus-cyber/wordmatch) created; instructor account/access instructions and access verification are pending. |
+| Online repository and instructor access / 1,3,5 | [Public repository](https://github.com/muzafferegedurmus-cyber/wordmatch); anonymous read access verified. No instructor username is required. |
 | Share before development / 3 | Not established retrospectively: development already occurred. This must be disclosed to the instructor. |
 | Issue backlog / 3,5 | [Hosted issues](https://github.com/muzafferegedurmus-cyber/wordmatch/issues) now track translation, instructor access and final delivery; backlog.md links to them. |
 | Meaningful commits and branch/PR/MR process / 3,5 | The original local history is uploaded. English documentation was reviewed and merged through hosted pull request 4; release preparation uses a separate branch and PR. |
-| Final tag and release / 3–5 | Version 1.0.0 and release-notes.md are prepared; the GitHub v1.0.0 release records publication. See acceptance-checklist.md for evidence and external blockers. |
+| Final tag and release / 3–5 | Version 1.0.1 and release-notes.md identify the public delivery version; the GitHub release records the tagged commit. See acceptance-checklist.md for evidence and external blockers. |
 
-The complete submission cannot be declared finished until instructor access and Teams delivery are verified. See acceptance-checklist.md for the eight final checklist items.
+The complete submission cannot be declared finished until the student submits the URL through Teams. See acceptance-checklist.md for the eight final checklist items.
